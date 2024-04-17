@@ -8,11 +8,24 @@ type Time = {
 }
 
 export default function Schedule() {
-    const [schedule, setSchedule] = useState<Time[]>([]);
+    const [schedule, setSchedule] = useState<Time[]>(() => {
+        const storedData = localStorage.getItem("mySchedule");
+
+        return storedData ? JSON.parse(storedData) : [];
+    });
+    const [labels, setLabels] = useState<string[]>([]);
+
+    useEffect(() => {
+        console.log('Schedule render');
+        localStorage.setItem("mySchedule", JSON.stringify(schedule));
+    }, [Schedule]);
 
     useEffect(() => {
         console.log('render');
-      });
+        schedule.map((value, _) => {
+            console.log(value.hour + ":" + value.minute + "-" + value.thing);
+        })
+    });
 
     const handleClick = () => {
         let newTime: Time = {
@@ -31,46 +44,68 @@ export default function Schedule() {
         setSchedule(newSchedule);
     };
 
+    const addLabels = (value: string) => {
+        setLabels([...labels.slice(), value]);
+    };
+
     return (
         <>
-        {schedule.map((value, index) => (
-            <TimeLine index={index} myTimeLine={value} onTimeLineChange={() => handleTimeLine} key={`timeLine_${index}`}/>
-        ))}
+            {schedule.map((value, index) => (
+                <TimeLine index={index} myTimeLine={value} onTimeLineChange={() => handleTimeLine} key={`timeLine_${index}`}/>
+            ))}
             <button onClick={handleClick}>add new timeLine</button>
             <div>{schedule.length}</div>
+            {schedule.map((value, _) => (
+                <div>{value.hour}:{value.minute}-{value.thing}</div>
+            ))}
+            <div>labels</div>
+            <ul>
+                {labels.map((value, index) => (
+                    <li id={`labels_${index}`}>{value}</li>
+                ))}
+            </ul>
         </>
     );
 }
 
 const TimeLine: React.FC<{ index: number; myTimeLine: Time; onTimeLineChange: (index: number, value: Time) => void }> = ({ index, myTimeLine, onTimeLineChange }) => {
-    const [input, setInput] = useState("");
+    const [inputHour, setInputHour] = useState<number>(myTimeLine.hour);
+    const [inputMinute, setInputMinute] = useState<number>(myTimeLine.minute);
+    const [inputThing, setInputThing] = useState<string>(myTimeLine.thing);
 
-    //const handleSelectHours = (hour: number) => {    };
-    const handleChange = (index: number, value: string) => {
-        switch(index) {
-            case 0: 
-                myTimeLine.hour = parseInt(value);
-                break;
-            case 1: 
-                myTimeLine.minute = parseInt(value);
-                break;
-            case 2: 
-                myTimeLine.thing = value;
-                break;
-        }
+    useEffect(() => {
+        console.log('TimeLine render');
+    }, [myTimeLine]);
 
+    const handleHourChange = (value: string) => {
+        myTimeLine.hour = parseInt(value);
+        setInputHour(myTimeLine.hour);
+        onTimeLineChange(index, myTimeLine);
+    };
+
+    const handleMinuteChange = (value: string) => {
+        myTimeLine.minute = parseInt(value);
+        setInputMinute(myTimeLine.minute);
+        onTimeLineChange(index, myTimeLine);
+    };
+
+    const handleThingChange = (value: string) => {
+        myTimeLine.thing = value;
+        setInputThing(myTimeLine.thing);
         onTimeLineChange(index, myTimeLine);
     };
 
     return (
         <>
             <div style={{ display: 'inline-block' }}>
-                <SelectHours hour={myTimeLine.hour} handleChange={handleChange}/>
+                <input type="text" value={inputHour}
+                    onChange={e => (handleHourChange(e.target.value))} />
                 <span>:</span>
-                <SelectMinutes minute={myTimeLine.minute} handleChange={handleChange}/>
+                <input type="text" value={inputMinute}
+                    onChange={e => (handleMinuteChange(e.target.value))} />
                 <span>-</span>
-                <input type="text" value={myTimeLine.thing}
-                    onChange={e => (handleChange(2, e.target.value))} />
+                <input type="text" value={inputThing}
+                    onChange={e => (handleThingChange(e.target.value))} />
             </div>
 
         </>

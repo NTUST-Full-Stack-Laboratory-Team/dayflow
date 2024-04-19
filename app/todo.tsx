@@ -4,6 +4,7 @@ import { useState } from 'react';
 interface FnTask {
     isComplete: boolean;
     title: string;
+    subTask?: FnTask[];
 }
 
 export default function Todo() {
@@ -16,7 +17,7 @@ export default function Todo() {
         if (taskTitle.trim() !== "") {
             const newTask: FnTask = {
                 isComplete: false,
-                title: taskTitle
+                title: taskTitle,
             };
             setTasks([...tasks, newTask]);
             setTaskTitle(""); // 清空输入字段
@@ -67,6 +68,29 @@ export default function Todo() {
                                 </span>
                             )
                         }
+                        <div>{task.subTask && task.subTask.map((subTask, subIndex) =>
+                            <div key={subIndex}>
+                                <button onClick={() => handleClick(subIndex)}>
+                                    {subTask.isComplete ? "✔" : "❌"}
+                                </button>
+                                {
+                                    editingTaskIndex === subIndex ? (
+                                        <div>
+                                            <input type="string" value={listTitle}
+                                                onChange={(e) => handleTitleChange(e, subIndex)}
+                                                onBlur={handleTitleBlur}
+                                                autoFocus />
+                                            <button>" i "</button>
+                                        </div>
+                                    ) : (
+                                        <span style={{ textDecoration: subTask.isComplete ? 'line-through' : 'none' }}
+                                            onClick={() => handleTitleClick(subIndex)}>
+                                            {subTask.title}
+                                        </span>
+                                    )
+                                }
+                            </div>)}
+                        </div>
                     </div>)}
                 </div>
                 {

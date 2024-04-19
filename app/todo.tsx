@@ -9,6 +9,7 @@ interface FnTask {
 export default function Todo() {
     const [taskTitle, setTaskTitle] = useState<string>("");
     const [tasks, setTasks] = useState<FnTask[]>([]);
+    const [editingTaskIndex, setEditingTaskIndex] = useState<number | null>(null);
 
     const addTask = (): void => {
         if (taskTitle.trim() !== "") {
@@ -21,14 +22,23 @@ export default function Todo() {
         }
     }
 
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
         setTaskTitle(e.target.value);
+        tasks[index].title = e.target.value;
     }
 
     const handleClick = (index: number): void => {
         const newTasks = [...tasks];
         newTasks[index].isComplete = !(tasks[index].isComplete);
         setTasks(newTasks);
+    }
+
+    const handleTitleClick = (index: number): void => {
+        setEditingTaskIndex(index);
+    }
+
+    const handleTitleBlur = (): void => {
+        setEditingTaskIndex(null);
     }
 
     return (
@@ -39,14 +49,32 @@ export default function Todo() {
                         <button onClick={() => handleClick(index)}>
                             {task.isComplete ? "✔" : "❌"}
                         </button>
-                        {task.title}
+                        {
+                            editingTaskIndex === index ? (
+                                <input type="string" value={taskTitle}
+                                    onChange={(e) => handleTitleChange(e, index)}
+                                    onBlur={handleTitleBlur}
+                                    autoFocus />
+                            ) : (
+                                <span style={{ textDecoration: task.isComplete ? 'line-through' : 'none' }}
+                                    onClick={() => handleTitleClick(index)}>
+                                    {task.title}
+                                </span>
+                            )
+                        }
                     </div>)}
                 </div>
-                <div>
-                    <input type="string" value={taskTitle} onChange={handleTitleChange} />
-                    <button onClick={addTask} value={taskTitle}>Add</button>
-                </div>
-            </div>
+                {
+                    editingTaskIndex !== null ? (
+                        <></>
+                    ) : (
+                        <div>
+                            <input type="string" value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)} />
+                            <button onClick={addTask} value={taskTitle}>Add</button>
+                        </div>
+                    )
+                }
+            </div >
         </>
     )
 }

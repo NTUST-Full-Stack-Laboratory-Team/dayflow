@@ -8,6 +8,7 @@ interface FnTask {
 
 export default function Todo() {
     const [taskTitle, setTaskTitle] = useState<string>("");
+    const [listTitle, setListTitle] = useState<string>("");
     const [tasks, setTasks] = useState<FnTask[]>([]);
     const [editingTaskIndex, setEditingTaskIndex] = useState<number | null>(null);
 
@@ -23,7 +24,7 @@ export default function Todo() {
     }
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
-        setTaskTitle(e.target.value);
+        setListTitle(e.target.value);
         tasks[index].title = e.target.value;
     }
 
@@ -34,6 +35,7 @@ export default function Todo() {
     }
 
     const handleTitleClick = (index: number): void => {
+        setListTitle(tasks[index].title);
         setEditingTaskIndex(index);
     }
 
@@ -51,7 +53,7 @@ export default function Todo() {
                         </button>
                         {
                             editingTaskIndex === index ? (
-                                <input type="string" value={taskTitle}
+                                <input type="string" value={listTitle}
                                     onChange={(e) => handleTitleChange(e, index)}
                                     onBlur={handleTitleBlur}
                                     autoFocus />

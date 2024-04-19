@@ -53,10 +53,13 @@ export default function Todo() {
                         </button>
                         {
                             editingTaskIndex === index ? (
-                                <input type="string" value={listTitle}
-                                    onChange={(e) => handleTitleChange(e, index)}
-                                    onBlur={handleTitleBlur}
-                                    autoFocus />
+                                <div>
+                                    <input type="string" value={listTitle}
+                                        onChange={(e) => handleTitleChange(e, index)}
+                                        onBlur={handleTitleBlur}
+                                        autoFocus />
+                                    <button>" i "</button>
+                                </div>
                             ) : (
                                 <span style={{ textDecoration: task.isComplete ? 'line-through' : 'none' }}
                                     onClick={() => handleTitleClick(index)}>
@@ -71,7 +74,9 @@ export default function Todo() {
                         <></>
                     ) : (
                         <div>
+                            <>❌</>
                             <input type="string" value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)} />
+                            <button>" i "</button>
                             <button onClick={addTask} value={taskTitle}>Add</button>
                         </div>
                     )

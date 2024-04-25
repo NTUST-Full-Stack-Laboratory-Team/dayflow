@@ -79,12 +79,16 @@ const TimeLine: React.FC<{ index: number; myTimeLine: Time; onTimeLineChange: (i
 
     const handleHourChange = (value: string) => {
         myTimeLine.hour = parseInt(value);
+        if (myTimeLine.hour < 0) myTimeLine.hour = 0;
+        else if (myTimeLine.hour >= 24) myTimeLine.hour = 23;
         setInputHour(myTimeLine.hour);
         onTimeLineChange(index, myTimeLine);
     };
 
     const handleMinuteChange = (value: string) => {
         myTimeLine.minute = parseInt(value);
+        if (myTimeLine.minute < 0) myTimeLine.minute = 0;
+        else if (myTimeLine.minute >= 60) myTimeLine.minute = 59;
         setInputMinute(myTimeLine.minute);
         onTimeLineChange(index, myTimeLine);
     };
@@ -98,10 +102,10 @@ const TimeLine: React.FC<{ index: number; myTimeLine: Time; onTimeLineChange: (i
     return (
         <>
             <div style={{ display: 'inline-block' }}>
-                <input type="text" value={inputHour}
+                <input type="number" value={inputHour}
                     onChange={e => (handleHourChange(e.target.value))} />
                 <span>:</span>
-                <input type="text" value={inputMinute}
+                <input type="number" value={inputMinute}
                     onChange={e => (handleMinuteChange(e.target.value))} />
                 <span>-</span>
                 <input type="text" value={inputThing}

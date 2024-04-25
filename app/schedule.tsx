@@ -13,29 +13,30 @@ export default function Schedule() {
 
         return storedData ? JSON.parse(storedData) : [];
     });
+    const [status, setStatus] = useState<boolean[]>([]);
     const [labels, setLabels] = useState<string[]>([]);
 
     useEffect(() => {
         console.log('Schedule render');
         localStorage.setItem("mySchedule", JSON.stringify(schedule));
-    }, [Schedule]);
+    }, [schedule]);
 
     useEffect(() => {
         console.log('render');
-        schedule.map((value, _) => {
-            console.log(value.hour + ":" + value.minute + "-" + value.thing);
-        })
+        
     });
 
     const handleClick = () => {
         let newTime: Time = {
             hour: 0,
             minute: 0,
-            thing: ""
+            thing: "",
         }
         
         let newSchedule = [...schedule.slice(), newTime];
         setSchedule(newSchedule);
+        let newStatus: boolean[] = [...status, false];
+        setStatus(newStatus);
     };
 
     const handleTimeLine = (index: number, value: Time) => {
@@ -44,6 +45,20 @@ export default function Schedule() {
         setSchedule(newSchedule);
     };
 
+    const handleSave = () => {
+        setSchedule(schedule);
+        // schedule.map((value, _) => {
+        //     console.log(value.hour + ":" + value.minute + "-" + value.thing);
+        // })
+        setStatus(new Array(status.length).fill(false));
+    };
+
+    const handleStatusChange = (index: number) => {
+        let newStatus: Array<boolean> = new Array(status.length).fill(false);
+        newStatus[index] = true;
+        setStatus(newStatus);
+    }
+    
     const addLabels = (value: string) => {
         setLabels([...labels.slice(), value]);
     };
@@ -51,7 +66,7 @@ export default function Schedule() {
     return (
         <>
             {schedule.map((value, index) => (
-                <TimeLine index={index} myTimeLine={value} onTimeLineChange={() => handleTimeLine} key={`timeLine_${index}`}/>
+                <TimeLine index={index} myTimeLine={value} onTimeLineChange={handleTimeLine} status={status[index]} onStatusChange={handleStatusChange} key={`timeLine_${index}`}/>
             ))}
             <button onClick={handleClick}>add new timeLine</button>
             <div>{schedule.length}</div>
@@ -61,17 +76,20 @@ export default function Schedule() {
             <div>labels</div>
             <ul>
                 {labels.map((value, index) => (
-                    <li id={`labels_${index}`}>{value}</li>
+                    <li key={`labels_${index}`}>{value}</li>
                 ))}
             </ul>
+            <button onClick={handleSave}>save</button>
         </>
     );
 }
 
-const TimeLine: React.FC<{ index: number; myTimeLine: Time; onTimeLineChange: (index: number, value: Time) => void }> = ({ index, myTimeLine, onTimeLineChange }) => {
+const TimeLine: React.FC<{ index: number; myTimeLine: Time; onTimeLineChange: (index: number, value: Time) => void; status: boolean; onStatusChange: (index: number) => void }> 
+    = ({ index, myTimeLine, onTimeLineChange, status, onStatusChange }) => {
     const [inputHour, setInputHour] = useState<number>(myTimeLine.hour);
     const [inputMinute, setInputMinute] = useState<number>(myTimeLine.minute);
     const [inputThing, setInputThing] = useState<string>(myTimeLine.thing);
+    const [type, setType] = useState<boolean[]>(new Array(3).fill(false));
 
     useEffect(() => {
         console.log('TimeLine render');
@@ -99,47 +117,71 @@ const TimeLine: React.FC<{ index: number; myTimeLine: Time; onTimeLineChange: (i
         onTimeLineChange(index, myTimeLine);
     };
 
+    const changeInputType = (index: number) => {
+        //console.log('changeType');
+        let tempType: boolean[] = new Array(3).fill(false);
+        switch(index) {
+            case 0: tempType[0] = true; break;
+            case 1: tempType[1] = true; break;
+            case 2: tempType[2] = true; break;
+        }
+        setType(tempType);
+        onStatusChange(index);
+    };
+
+    useEffect(() => {
+        if (!status) {
+            const tempType: boolean[] = new Array(3).fill(false);
+            setType(tempType);
+        }
+    }, [status]);
+
     return (
         <>
             <div style={{ display: 'inline-block' }}>
-                <input type="number" value={inputHour}
-                    onChange={e => (handleHourChange(e.target.value))} />
-                <span>:</span>
-                <input type="number" value={inputMinute}
-                    onChange={e => (handleMinuteChange(e.target.value))} />
-                <span>-</span>
-                <input type="text" value={inputThing}
-                    onChange={e => (handleThingChange(e.target.value))} />
+            {type[0] ? <input type="number" value={inputHour}
+                onChange={e => (handleHourChange(e.target.value))} />
+                : <button onClick={() => changeInputType(0)}>{inputHour}</button>}
+            <span>:</span>
+            {type[1] ? <input type="number" value={inputMinute}
+                onChange={e => (handleMinuteChange(e.target.value))} />
+                : <button onClick={() => changeInputType(1)}>{inputMinute}</button>}
+            <span>-</span>
+            {type[2] ? <input type="text" value={inputThing}
+                onChange={e => (handleThingChange(e.target.value))} />
+                : <button onClick={() => changeInputType(2)}>{inputThing}</button>}
+            
+
             </div>
 
         </>
     );
 }
 
-function SelectHours({ hour, handleChange }: 
-    { hour: number ; handleChange: (index: number, value: string) => void }) {
-    const numbers = Array.from({ length: 24 }, (_, index) => index);
+// function SelectHours({ hour, handleChange }: 
+//     { hour: number ; handleChange: (index: number, value: string) => void }) {
+//     const numbers = Array.from({ length: 24 }, (_, index) => index);
 
-    return (
-        <select name="hour" defaultValue={hour} onChange={(e) => handleChange(0, e.target.value)}>
-            <option key={"hour_disable"} value={""} disabled hidden></option>
-            {numbers.map((number) => (
-                <option key={`hour_${number}`} value={number}>{number}</option>
-            ))}
-        </select>
-    );
-}
+//     return (
+//         <select name="hour" defaultValue={hour} onChange={(e) => handleChange(0, e.target.value)}>
+//             <option key={"hour_disable"} value={""} disabled hidden></option>
+//             {numbers.map((number) => (
+//                 <option key={`hour_${number}`} value={number}>{number}</option>
+//             ))}
+//         </select>
+//     );
+// }
 
-function SelectMinutes({ minute, handleChange }: 
-    { minute: number; handleChange: (index: number, value: string) => void }) {
-    const numbers = Array.from({ length: 12 }, (_, index) => index * 5);
+// function SelectMinutes({ minute, handleChange }: 
+//     { minute: number; handleChange: (index: number, value: string) => void }) {
+//     const numbers = Array.from({ length: 12 }, (_, index) => index * 5);
 
-    return (
-        <select name="minute" defaultValue={minute} onChange={(e) => handleChange(1, e.target.value)}>
-            <option key={"minute_disable"} value={""} disabled hidden></option>
-            {numbers.map((number) => (
-                <option key={`minute_${number}`} value={number}>{number}</option>
-            ))}
-        </select>
-    );
-}
+//     return (
+//         <select name="minute" defaultValue={minute} onChange={(e) => handleChange(1, e.target.value)}>
+//             <option key={"minute_disable"} value={""} disabled hidden></option>
+//             {numbers.map((number) => (
+//                 <option key={`minute_${number}`} value={number}>{number}</option>
+//             ))}
+//         </select>
+//     );
+// }

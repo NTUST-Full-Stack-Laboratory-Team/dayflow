@@ -1,5 +1,6 @@
 "use client"
 import { useState } from 'react';
+import TodoDialog from './component/todoDialog';
 
 interface FnTask {
     isComplete: boolean;
@@ -12,6 +13,11 @@ export default function Todo() {
     const [listTitle, setListTitle] = useState<string>("");
     const [tasks, setTasks] = useState<FnTask[]>([]);
     const [editingTaskIndex, setEditingTaskIndex] = useState<number | null>(null);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    const openDialog = (): void => {
+        setIsDialogOpen(true);
+    }
 
     const addTask = (): void => {
         if (taskTitle.trim() !== "") {
@@ -22,6 +28,18 @@ export default function Todo() {
             setTasks([...tasks, newTask]);
             setTaskTitle(""); // 清空输入字段
         }
+    }
+
+    const addSubTask = (indexFrom: number, indexTar: number, indexSub: number): void => {
+        const newTasks: FnTask[] = {
+            ...tasks
+        }
+        if (newTasks[indexTar].subTask === undefined) {
+            newTasks[indexTar].subTask = []; // Initialize subTask array if it's undefined
+            indexSub = 0;
+        }
+        newTasks[indexTar].subTask[indexSub] = newTasks[indexFrom];
+        setTasks(newTasks);
     }
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
@@ -80,7 +98,7 @@ export default function Todo() {
                                                 onChange={(e) => handleTitleChange(e, subIndex)}
                                                 onBlur={handleTitleBlur}
                                                 autoFocus />
-                                            <button>" i "</button>
+                                            <button onClick={openDialog}>" i "</button>
                                         </div>
                                     ) : (
                                         <span style={{ textDecoration: subTask.isComplete ? 'line-through' : 'none' }}
@@ -100,12 +118,13 @@ export default function Todo() {
                         <div>
                             <>❌</>
                             <input type="string" value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)} />
-                            <button>" i "</button>
+                            <button onClick={openDialog}>" i "</button>
                             <button onClick={addTask} value={taskTitle}>Add</button>
                         </div>
                     )
                 }
             </div >
+            <TodoDialog isOpen={isDialogOpen} onClose={() => { setIsDialogOpen(false) }} />
         </>
     )
 }

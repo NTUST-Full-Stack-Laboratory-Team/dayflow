@@ -2,8 +2,10 @@
 import React, { useState, useEffect } from "react";
 
 type Time = {
-    hour: number;
-    minute: number;
+    startHour: number;
+    startMinute: number;
+    endHour: number;
+    endMinute: number;
     thing: string;
 }
 
@@ -27,9 +29,11 @@ export default function Schedule() {
 
     const handleClick = () => {
         let newTime: Time = {
-            hour: 0,
-            minute: 0,
-            thing: "",
+            startHour: 0,
+            startMinute: 0,
+            endHour: 0,
+            endMinute: 0,
+            thing: "something",
         }
         
         let newSchedule = [...schedule.slice(), newTime];
@@ -64,50 +68,64 @@ export default function Schedule() {
 
     return (
         <>
-            <div>{status.length}</div>
             {schedule.map((value, index) => (
                 <TimeLine index={index} myTimeLine={value} onTimeLineChange={handleTimeLine} status={status[index]} onStatusChange={handleStatusChange} key={`timeLine_${index}`}/>
             ))}
             <button onClick={handleClick}>add new timeLine</button>
-            <div>{schedule.length}</div>
-            {schedule.map((value, _) => (
-                <div>{value.hour}:{value.minute}-{value.thing}</div>
-            ))}
+            <button onClick={handleSave}>save</button>
+            <br></br>
             <div>labels</div>
             <ul>
                 {labels.map((value, index) => (
                     <li key={`labels_${index}`}>{value}</li>
                 ))}
             </ul>
-            <button onClick={handleSave}>save</button>
         </>
     );
 }
 
 const TimeLine: React.FC<{ index: number; myTimeLine: Time; onTimeLineChange: (index: number, value: Time) => void; status: boolean; onStatusChange: (index: number) => void }> 
     = ({ index, myTimeLine, onTimeLineChange, status, onStatusChange }) => {
-    const [inputHour, setInputHour] = useState<number>(myTimeLine.hour);
-    const [inputMinute, setInputMinute] = useState<number>(myTimeLine.minute);
+    const [inputStartHour, setInputStartHour] = useState<number>(myTimeLine.startHour);
+    const [inputEndHour, setInputEndHour] = useState<number>(myTimeLine.endHour);
+    const [inputStartMinute, setInputStartMinute] = useState<number>(myTimeLine.startMinute);
+    const [inputEndMinute, setInputEndMinute] = useState<number>(myTimeLine.endMinute);
     const [inputThing, setInputThing] = useState<string>(myTimeLine.thing);
-    const [type, setType] = useState<boolean[]>(new Array(3).fill(false));
+    const [type, setType] = useState<boolean[]>(new Array(5).fill(false));
 
     useEffect(() => {
         console.log('TimeLine render');
     }, [myTimeLine]);
 
-    const handleHourChange = (value: string) => {
-        myTimeLine.hour = parseInt(value);
-        if (myTimeLine.hour < 0) myTimeLine.hour = 0;
-        else if (myTimeLine.hour >= 24) myTimeLine.hour = 23;
-        setInputHour(myTimeLine.hour);
+    const handleStartHourChange = (value: number) => {
+        if (value < 0) myTimeLine.startHour = 0;
+        else if (value >= 24) myTimeLine.startHour = 23;
+        else myTimeLine.startHour = value;
+        setInputStartHour(myTimeLine.startHour);
         onTimeLineChange(index, myTimeLine);
     };
 
-    const handleMinuteChange = (value: string) => {
-        myTimeLine.minute = parseInt(value);
-        if (myTimeLine.minute < 0) myTimeLine.minute = 0;
-        else if (myTimeLine.minute >= 60) myTimeLine.minute = 59;
-        setInputMinute(myTimeLine.minute);
+    const handleEndHourChange = (value: number) => {
+        if (value < 0) myTimeLine.endHour = 0;
+        else if (value >= 24) myTimeLine.endHour = 23;
+        else myTimeLine.endHour = value;
+        setInputEndHour(myTimeLine.endHour);
+        onTimeLineChange(index, myTimeLine);
+    };
+
+    const handleStartMinuteChange = (value: number) => {
+        if (value < 0) myTimeLine.startMinute = 0;
+        else if (value >= 60) myTimeLine.startMinute = 59;
+        else myTimeLine.startMinute = value;
+        setInputStartMinute(myTimeLine.startMinute);
+        onTimeLineChange(index, myTimeLine);
+    };
+
+    const handleEndMinuteChange = (value: number) => {
+        if (value < 0) myTimeLine.endMinute = 0;
+        else if (value >= 60) myTimeLine.endMinute = 59;
+        else myTimeLine.endMinute = value;
+        setInputEndMinute(myTimeLine.endMinute);
         onTimeLineChange(index, myTimeLine);
     };
 
@@ -119,11 +137,13 @@ const TimeLine: React.FC<{ index: number; myTimeLine: Time; onTimeLineChange: (i
 
     const changeInputType = (_index: number) => {
         //console.log('changeType');
-        let tempType: boolean[] = new Array(3).fill(false);
+        let tempType: boolean[] = new Array(5).fill(false);
         switch(_index) {
             case 0: tempType[0] = true; break;
             case 1: tempType[1] = true; break;
             case 2: tempType[2] = true; break;
+            case 3: tempType[3] = true; break;
+            case 4: tempType[4] = true; break;
         }
         setType(tempType);
         onStatusChange(index);
@@ -131,7 +151,7 @@ const TimeLine: React.FC<{ index: number; myTimeLine: Time; onTimeLineChange: (i
 
     useEffect(() => {
         if (!status) {
-            const tempType: boolean[] = new Array(3).fill(false);
+            const tempType: boolean[] = new Array(5).fill(false);
             setType(tempType);
         }
     }, [status]);
@@ -139,17 +159,25 @@ const TimeLine: React.FC<{ index: number; myTimeLine: Time; onTimeLineChange: (i
     return (
         <>
             <div style={{ display: 'inline-block' }}>
-            {type[0] ? <input type="number" value={inputHour}
-                onChange={e => (handleHourChange(e.target.value))} />
-                : <button onClick={() => changeInputType(0)}>{inputHour}</button>}
+            {type[0] ? <input type="number" value={inputStartHour}
+                onChange={e => (handleStartHourChange(parseInt(e.target.value)))} />
+                : <button onClick={() => changeInputType(0)}>{inputStartHour}</button>}
             <span>:</span>
-            {type[1] ? <input type="number" value={inputMinute}
-                onChange={e => (handleMinuteChange(e.target.value))} />
-                : <button onClick={() => changeInputType(1)}>{inputMinute}</button>}
+            {type[1] ? <input type="number" value={inputStartMinute}
+                onChange={e => (handleStartMinuteChange(parseInt(e.target.value)))} />
+                : <button onClick={() => changeInputType(1)}>{inputStartMinute}</button>}
+            <span>~</span>
+            {type[2] ? <input type="number" value={inputEndHour}
+                onChange={e => (handleEndHourChange(parseInt(e.target.value)))} />
+                : <button onClick={() => changeInputType(2)}>{inputEndHour}</button>}
+            <span>:</span>
+            {type[3] ? <input type="number" value={inputEndMinute}
+                onChange={e => (handleEndMinuteChange(parseInt(e.target.value)))} />
+                : <button onClick={() => changeInputType(3)}>{inputEndMinute}</button>}
             <span>-</span>
-            {type[2] ? <input type="text" value={inputThing}
+            {type[4] ? <input type="text" value={inputThing}
                 onChange={e => (handleThingChange(e.target.value))} />
-                : <button onClick={() => changeInputType(2)}>{inputThing}</button>}
+                : <button onClick={() => changeInputType(4)}>{inputThing}</button>}
             
 
             </div>

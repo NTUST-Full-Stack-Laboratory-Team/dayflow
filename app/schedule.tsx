@@ -9,6 +9,11 @@ type Time = {
     thing: string;
 }
 
+type Label = {
+    thing: string;
+    minute: number;
+}
+
 export default function Schedule() {
     const [schedule, setSchedule] = useState<Time[]>(() => {
         const storedData = localStorage.getItem("mySchedule");
@@ -16,11 +21,12 @@ export default function Schedule() {
         return storedData ? JSON.parse(storedData) : [];
     });
     const [status, setStatus] = useState<boolean[]>(new Array(schedule.length).fill(false));
-    const [labels, setLabels] = useState<string[]>([]);
+    const [labels, setLabels] = useState<Label[]>([]);
 
     useEffect(() => {
         console.log('Schedule render');
         localStorage.setItem("mySchedule", JSON.stringify(schedule));
+        addLabels();
     }, [schedule]);
 
     useEffect(() => {
@@ -36,10 +42,8 @@ export default function Schedule() {
             thing: "something",
         }
         
-        let newSchedule = [...schedule.slice(), newTime];
-        setSchedule(newSchedule);
-        let newStatus: boolean[] = [...status.slice(), false];
-        setStatus(newStatus);
+        setSchedule([...schedule.slice(), newTime]);
+        setStatus([...status.slice(), false]);
     };
 
     const handleTimeLine = (index: number, value: Time) => {
@@ -62,8 +66,28 @@ export default function Schedule() {
         setStatus(newStatus);
     }
     
-    const addLabels = (value: string) => {
-        setLabels([...labels.slice(), value]);
+    const addLabels = () => {
+        let newLables: Label[] = [];
+        schedule.map((value) => {
+            let ifExist = false;
+            let wasteTime = (value.endHour - value.startHour) * 60 + (value.endMinute - value.startMinute);
+            newLables.some((label) => {
+                if (value.thing == label.thing) {
+                    ifExist = true;
+                    label.minute += wasteTime;
+                    return true;
+                }
+            })
+
+            if (!ifExist) {
+                let newLabel: Label = {
+                    thing: value.thing,
+                    minute: wasteTime
+                }
+                newLables = [...newLables, newLabel];
+            }
+        })
+        setLabels(newLables);
     };
 
     return (
@@ -77,7 +101,8 @@ export default function Schedule() {
             <div>labels</div>
             <ul>
                 {labels.map((value, index) => (
-                    <li key={`labels_${index}`}>{value}</li>
+                    <li key={`labels_${index}`}>{value.thing} 
+                        - {Math.floor(value.minute / 60)}:{value.minute % 60}</li>
                 ))}
             </ul>
         </>
@@ -185,6 +210,7 @@ const TimeLine: React.FC<{ index: number; myTimeLine: Time; onTimeLineChange: (i
         </>
     );
 }
+
 
 // function SelectHours({ hour, handleChange }: 
 //     { hour: number ; handleChange: (index: number, value: string) => void }) {

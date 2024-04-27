@@ -13,7 +13,7 @@ export default function Schedule() {
 
         return storedData ? JSON.parse(storedData) : [];
     });
-    const [status, setStatus] = useState<boolean[]>([]);
+    const [status, setStatus] = useState<boolean[]>(new Array(schedule.length).fill(false));
     const [labels, setLabels] = useState<string[]>([]);
 
     useEffect(() => {
@@ -23,7 +23,6 @@ export default function Schedule() {
 
     useEffect(() => {
         console.log('render');
-        
     });
 
     const handleClick = () => {
@@ -35,7 +34,7 @@ export default function Schedule() {
         
         let newSchedule = [...schedule.slice(), newTime];
         setSchedule(newSchedule);
-        let newStatus: boolean[] = [...status, false];
+        let newStatus: boolean[] = [...status.slice(), false];
         setStatus(newStatus);
     };
 
@@ -54,7 +53,7 @@ export default function Schedule() {
     };
 
     const handleStatusChange = (index: number) => {
-        let newStatus: Array<boolean> = new Array(status.length).fill(false);
+        let newStatus: boolean[] = new Array(status.length).fill(false);
         newStatus[index] = true;
         setStatus(newStatus);
     }
@@ -65,6 +64,7 @@ export default function Schedule() {
 
     return (
         <>
+            <div>{status.length}</div>
             {schedule.map((value, index) => (
                 <TimeLine index={index} myTimeLine={value} onTimeLineChange={handleTimeLine} status={status[index]} onStatusChange={handleStatusChange} key={`timeLine_${index}`}/>
             ))}
@@ -117,10 +117,10 @@ const TimeLine: React.FC<{ index: number; myTimeLine: Time; onTimeLineChange: (i
         onTimeLineChange(index, myTimeLine);
     };
 
-    const changeInputType = (index: number) => {
+    const changeInputType = (_index: number) => {
         //console.log('changeType');
         let tempType: boolean[] = new Array(3).fill(false);
-        switch(index) {
+        switch(_index) {
             case 0: tempType[0] = true; break;
             case 1: tempType[1] = true; break;
             case 2: tempType[2] = true; break;

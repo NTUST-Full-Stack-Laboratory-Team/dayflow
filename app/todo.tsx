@@ -1,31 +1,48 @@
 "use client"
 import { useState } from 'react';
+// import { DragDropContext } from 'react-beautiful-dnd';
+import { DndProvider } from "react-dnd";
+import { useDrag } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import TodoDialog from './component/todoDialog';
+import Task from './component/task'
 
-interface TaskInf {
-    label: string;
-}
+
+
+// interface TaskInf {
+//     label: string;
+// }
 
 interface FnTask {
-    isComplete: boolean;
-    title: string;
+    id: string,
+    isEdit: boolean,
+    isComplete: boolean,
+    title: string,
     subTask?: FnTask[];
 }
 
+// const ItemTypes = {
+//     TASK: "task"
+// };
+
 export default function Todo() {
     const [taskTitle, setTaskTitle] = useState<string>("");
-    const [listTitle, setListTitle] = useState<string>("");
     const [tasks, setTasks] = useState<FnTask[]>([]);
-    const [editingTaskIndex, setEditingTaskIndex] = useState<number | null>(null);
+    const [editingTaskIndex, setEditingTaskIndex] =
+        useState<number | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+
 
     const openDialog = (): void => {
         setIsDialogOpen(true);
     }
 
-    const addTask = (): void => {
+    const addTask = (idNum: string): void => {
         if (taskTitle.trim() !== "") {
             const newTask: FnTask = {
+                id: idNum,
+                isEdit: false,
                 isComplete: false,
                 title: taskTitle,
             };
@@ -46,74 +63,53 @@ export default function Todo() {
     //     setTasks(newTasks);
     // }
 
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number): void => {
-        setListTitle(e.target.value);
-        tasks[index].title = e.target.value;
-    }
-
-    const handleClick = (index: number): void => {
+    const handleComplete = (index: number): void => {
         const newTasks = [...tasks];
         newTasks[index].isComplete = !(tasks[index].isComplete);
         setTasks(newTasks);
     }
 
     const handleTitleClick = (index: number): void => {
-        setListTitle(tasks[index].title);
+        const newTasks = [...tasks];
+        newTasks[index].isEdit = true;
         setEditingTaskIndex(index);
     }
 
-    const handleTitleBlur = (): void => {
-        setEditingTaskIndex(null);
+    const handleTitleChange = (title: string, index: number) => {
+        setTaskTitle(title);
+        const newTasks = [...tasks];
+        newTasks[index].title = title;
+        setTasks(newTasks);
+    }
+
+    const handleDrop = (droppedItemId: string) => {
+        const droppedItemIndex = tasks.findIndex(task => task.id === droppedItemId);
+        if (droppedItemIndex !== -1) {
+            const updatedTasks = [...tasks];
+            const draggedItem = updatedTasks.splice(droppedItemIndex, 1)[0];
+            // 更新任务列表
+            setTasks(prevTasks => {
+                const newTasks = [...prevTasks];
+                newTasks.splice(droppedItemIndex, 0, draggedItem);
+                return newTasks;
+            });
+        }
     }
 
     return (
-        <>
+        <DndProvider backend={HTML5Backend}>
             <div>
                 <div>{tasks.map((task, index) =>
                     <div key={index}>
-                        <div>
-                            <button onClick={() => handleClick(index)}>
-                                {task.isComplete ? "✔" : "❌"}
-                            </button>
-                            {
-                                editingTaskIndex !== index ? (
-                                    <span style={{ textDecoration: task.isComplete ? 'line-through' : 'none' }}
-                                        onClick={() => handleTitleClick(index)}>
-                                        {task.title}
-                                    </span>
-                                ) : (
-                                    <div>
-                                        <input type="string" value={listTitle}
-                                            onChange={(e) => handleTitleChange(e, index)}
-                                            onBlur={handleTitleBlur} />
-                                    </div>
-                                )
-                            }
-                            <button onClick={openDialog}>" i "</button>
-                        </div>
-
-                        <div>{task.subTask && task.subTask.map((subTask, subIndex) =>
-                            <div key={subIndex}>
-                                <button onClick={() => handleClick(subIndex)}>
-                                    {subTask.isComplete ? "✔" : "❌"}
-                                </button>
-                                {
-                                    editingTaskIndex !== subIndex ? (
-                                        <span style={{ textDecoration: subTask.isComplete ? 'line-through' : 'none' }}
-                                            onClick={() => handleTitleClick(subIndex)}>
-                                            {subTask.title}
-                                        </span>
-                                    ) : (
-                                        <div>
-                                            <input type="string" value={listTitle}
-                                                onChange={(e) => handleTitleChange(e, subIndex)}
-                                                onBlur={handleTitleBlur} />
-                                        </div>
-                                    )
-                                }
-                                <button onClick={openDialog}>" i "</button>
-                            </div>)}
-                        </div>
+                        <Task id={"item" + index}
+                            isEdit={task.isEdit}
+                            isComplete={task.isComplete}
+                            title={task.title}
+                            onComplete={() => handleComplete(index)}
+                            onEdit={() => handleTitleClick(index)}
+                            onTitleChange={(title: string) =>
+                                handleTitleChange(title, index)}
+                            onDrop={(id: string) => handleDrop(id)} />
                     </div>)}
                 </div>
                 {
@@ -122,14 +118,61 @@ export default function Todo() {
                     ) : (
                         <div>
                             <>❌</>
-                            <input type="string" value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)} />
+                            <input type="string"
+                                value={taskTitle}
+                                onChange={(e) => setTaskTitle(e.target.value)} />
                             <button onClick={openDialog}>" i "</button>
-                            <button onClick={addTask} value={taskTitle}>Add</button>
+                            <button onClick={() => addTask("item" + (tasks.length - 1))}
+                                value={taskTitle}>Add</button>
                         </div>
                     )
                 }
+                <TodoDialog isOpen={isDialogOpen}
+                    onClose={() => { setIsDialogOpen(false) }} />
             </div >
-            <TodoDialog isOpen={isDialogOpen} onClose={() => { setIsDialogOpen(false) }} />
-        </>
+        </DndProvider >
     )
 }
+{/* <div>
+<button onClick={() => handleClick(index)}>
+    {task.isComplete ? "✔" : "❌"}
+</button>
+{
+    editingTaskIndex !== index ? (
+        <span style={{ textDecoration: task.isComplete ? 'line-through' : 'none' }}
+            onClick={() => handleTitleClick(index)}>
+            {task.title}
+        </span>
+    ) : (
+        <div>
+            <input type="string" value={listTitle}
+                onChange={(e) => handleTitleChange(e, index)}
+                onBlur={handleTitleBlur} />
+            <button onClick={openDialog}>" i "</button>
+        </div>
+    )
+}
+</div> */}
+
+{/* <div>{task.subTask && task.subTask.map((subTask, subIndex) =>
+<div key={subIndex}>
+    <button onClick={() => handleClick(subIndex)}>
+        {subTask.isComplete ? "✔" : "❌"}
+    </button>
+    {
+        editingTaskIndex !== subIndex ? (
+            <span style={{ textDecoration: subTask.isComplete ? 'line-through' : 'none' }}
+                onClick={() => handleTitleClick(subIndex)}>
+                {subTask.title}
+            </span>
+        ) : (
+            <div>
+                <input type="string" value={listTitle}
+                    onChange={(e) => handleTitleChange(e, subIndex)}
+                    onBlur={handleTitleBlur} />
+                <button onClick={openDialog}>" i "</button>
+            </div>
+        )
+    }
+</div>)}
+</div> */}

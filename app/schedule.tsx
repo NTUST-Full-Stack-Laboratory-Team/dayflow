@@ -1,5 +1,7 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import ReactDOM from 'react-dom';
+import PieChart from './PieChart';
 
 type Time = {
     startHour: number;
@@ -22,10 +24,26 @@ export default function Schedule() {
     });
     const [status, setStatus] = useState<boolean[]>(new Array(schedule.length).fill(false));
     const [labels, setLabels] = useState<Label[]>([]);
-
+    const ifSave: boolean = useMemo(() => {
+        status.map((value) => {
+            if (value) return false;
+        })
+        return true;
+    }, [status]);
+    const chartData = useMemo(() => {
+        if (ifSave) return labels.map(label => label.minute);
+        return null;
+    }, [labels, ifSave]);
+    const chartLabel = useMemo(() => {
+        if (ifSave) return labels.map(label => label.thing);
+        return null;
+    }, [labels, ifSave]);
+    
     useEffect(() => {
         console.log('Schedule render');
         localStorage.setItem("mySchedule", JSON.stringify(schedule));
+
+        //dill the label and chart
         addLabels();
     }, [schedule]);
 
@@ -67,11 +85,11 @@ export default function Schedule() {
     }
     
     const addLabels = () => {
-        let newLables: Label[] = [];
+        let newLabels: Label[] = [];
         schedule.map((value) => {
             let ifExist = false;
             let wasteTime = (value.endHour - value.startHour) * 60 + (value.endMinute - value.startMinute);
-            newLables.some((label) => {
+            newLabels.some((label) => {
                 if (value.thing == label.thing) {
                     ifExist = true;
                     label.minute += wasteTime;
@@ -84,10 +102,10 @@ export default function Schedule() {
                     thing: value.thing,
                     minute: wasteTime
                 }
-                newLables = [...newLables, newLabel];
+                newLabels = [...newLabels, newLabel];
             }
         })
-        setLabels(newLables);
+        setLabels(newLabels);
     };
 
     return (
@@ -105,6 +123,7 @@ export default function Schedule() {
                         - {Math.floor(value.minute / 60)}:{value.minute % 60}</li>
                 ))}
             </ul>
+            <PieChart data={chartData} labels={chartLabel} />
         </>
     );
 }

@@ -1,25 +1,14 @@
 "use client"
 import { useState } from 'react';
-// import { DragDropContext } from 'react-beautiful-dnd';
 import { DndProvider } from "react-dnd";
-import { useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import TodoDialog from './component/todoDialog';
 import Task from './component/task'
-
-
+import { ITask } from './task';
 
 // interface TaskInf {
 //     label: string;
 // }
-
-interface FnTask {
-    id: string,
-    isEdit: boolean,
-    isComplete: boolean,
-    title: string,
-    subTask?: FnTask[];
-}
 
 // const ItemTypes = {
 //     TASK: "task"
@@ -27,7 +16,7 @@ interface FnTask {
 
 export default function Todo() {
     const [taskTitle, setTaskTitle] = useState<string>("");
-    const [tasks, setTasks] = useState<FnTask[]>([]);
+    const [tasks, setTasks] = useState<ITask[]>([]);
     const [editingTaskIndex, setEditingTaskIndex] =
         useState<number | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -40,7 +29,7 @@ export default function Todo() {
 
     const addTask = (idNum: string): void => {
         if (taskTitle.trim() !== "") {
-            const newTask: FnTask = {
+            const newTask: ITask = {
                 id: idNum,
                 isEdit: false,
                 isComplete: false,
@@ -82,18 +71,33 @@ export default function Todo() {
         setTasks(newTasks);
     }
 
-    const handleDrop = (droppedItemId: string) => {
-        const droppedItemIndex = tasks.findIndex(task => task.id === droppedItemId);
-        if (droppedItemIndex !== -1) {
+    const handleDrop = (draggedItemId: string, droppedItemId: string) => {
+        // const updatedTasks = [...tasks];
+        // const draggedItemIndex = tasks.findIndex(task => task.id === draggedItemId);
+        // const draggedItem = updatedTasks[draggedItemIndex];
+        // const droppedItemIndex = tasks.findIndex(task => task.id === droppedItemId);
+        // if (droppedItemIndex !== -1) {
+        //     updatedTasks.splice(droppedItemIndex, 0, draggedItem);
+        //     const deleteItemIndex = updatedTasks.findIndex(task => task.id === draggedItemId);
+        //     updatedTasks.splice(deleteItemIndex, 1)[0];
+        //     setTasks(updatedTasks);
+        // }
+
+        console.log(`draggedItemId=${draggedItemId}, droppedItemId=${droppedItemId}`)
+
+        const draggedItemIndex = tasks.findIndex(task => task.id === draggedItemId);
+        if (draggedItemIndex !== -1) {
             const updatedTasks = [...tasks];
-            const draggedItem = updatedTasks.splice(droppedItemIndex, 1)[0];
-            // 更新任务列表
-            setTasks(prevTasks => {
-                const newTasks = [...prevTasks];
-                newTasks.splice(droppedItemIndex, 0, draggedItem);
-                return newTasks;
-            });
+            const draggedItem = updatedTasks.splice(draggedItemIndex, 1)[0];
+            const droppedItemIndex = updatedTasks.findIndex(task => task.id === droppedItemId);
+            if (droppedItemIndex !== -1) {
+                console.log(`draggedItemIndex=${draggedItemIndex}, droppedItemIndex + 1=${droppedItemIndex + 1}`)
+                updatedTasks.splice(droppedItemIndex + 1, 0, draggedItem);
+                setTasks(updatedTasks);
+            }
         }
+
+        console.log(tasks)
     }
 
     return (
@@ -101,7 +105,7 @@ export default function Todo() {
             <div>
                 <div>{tasks.map((task, index) =>
                     <div key={index}>
-                        <Task id={"item" + index}
+                        <Task id={task.id}
                             isEdit={task.isEdit}
                             isComplete={task.isComplete}
                             title={task.title}
@@ -109,7 +113,8 @@ export default function Todo() {
                             onEdit={() => handleTitleClick(index)}
                             onTitleChange={(title: string) =>
                                 handleTitleChange(title, index)}
-                            onDrop={(id: string) => handleDrop(id)} />
+                            onDrop={(idDrag: string, idDrop: string) =>
+                                handleDrop(idDrag, idDrop)} />
                     </div>)}
                 </div>
                 {
@@ -122,7 +127,7 @@ export default function Todo() {
                                 value={taskTitle}
                                 onChange={(e) => setTaskTitle(e.target.value)} />
                             <button onClick={openDialog}>" i "</button>
-                            <button onClick={() => addTask("item" + (tasks.length - 1))}
+                            <button onClick={() => addTask("item" + (tasks.length))}
                                 value={taskTitle}>Add</button>
                         </div>
                     )

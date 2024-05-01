@@ -1,21 +1,17 @@
 import { useState } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import TodoDialog from './todoDialog';
+import { ITask } from '../task';
 
-interface FnTask {
-    isEdit: boolean,
-    isComplete: boolean,
-    title: string,
-    subTask?: FnTask[];
-}
-
-interface TaskProps extends FnTask {
+interface TaskProps extends ITask {
     onComplete: () => void;
     onEdit: () => void;
     onTitleChange: (title: string) => void; // Callback function type
 }
 
-const Task = (props: FnTask & TaskProps & { id: string, onDrop: (id: string) => void }) => {
+const Task = (props: ITask & TaskProps &
+{ id: string, onDrop: (idDrag: string, idDrop: string) => void }) => {
+
     const [listTitle, setListTitle] = useState<string>("");
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -33,7 +29,7 @@ const Task = (props: FnTask & TaskProps & { id: string, onDrop: (id: string) => 
 
     const [, drop] = useDrop({
         accept: 'item',
-        drop: (droppedItem: { id: string }) => props.onDrop(droppedItem.id),
+        drop: (droppedItem: { id: string }) => props.onDrop(droppedItem.id, props.id),
     });
 
     const opacity = isDragging ? 0.4 : 1;

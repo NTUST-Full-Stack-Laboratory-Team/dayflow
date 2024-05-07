@@ -2,7 +2,7 @@ import { useState, useRef, FC } from 'react';
 import type { Identifier, XYCoord } from 'dnd-core'
 import { useDrag, useDrop } from 'react-dnd';
 import TodoDialog from './todoDialog';
-import { ITask, ItemTypes } from '../task';
+import { ItemTask, ItemTypes } from '../task';
 
 const style = {
     border: '1px dashed gray',
@@ -12,7 +12,7 @@ const style = {
     cursor: 'move',
 }
 
-interface TaskProps extends ITask {
+interface TaskProps extends ItemTask {
     onComplete: () => void;
     onEdit: () => void;
     onTitleChange: (title: string) => void; // Callback function type
@@ -25,7 +25,7 @@ interface DragItem {
     type: string
 }
 
-export const Task = (props: TaskProps) => {
+export const Task: FC<TaskProps> = ({ id, title, index, moveTask }) => {
     const [listTitle, setListTitle] = useState<string>("");
     const ref = useRef<HTMLDivElement>(null)
 
@@ -45,7 +45,7 @@ export const Task = (props: TaskProps) => {
                 return
             }
             const dragIndex = item.index
-            const hoverIndex = props.index
+            const hoverIndex = index
 
             // Don't replace items with themselves
             if (dragIndex === hoverIndex) {
@@ -80,7 +80,7 @@ export const Task = (props: TaskProps) => {
             }
 
             // Time to actually perform the action
-            props.moveTask(dragIndex, hoverIndex)
+            moveTask(dragIndex, hoverIndex)
 
             // Note: we're mutating the monitor item here!
             // Generally it's better to avoid mutations,
@@ -93,7 +93,7 @@ export const Task = (props: TaskProps) => {
     const [{ isDragging }, drag] = useDrag({
         type: ItemTypes.TASK,
         item: () => {
-            return { id: props.id, index: props.index }
+            return { id: id, index: index }
         },
         collect: (monitor: any) => ({
             isDragging: monitor.isDragging(),
@@ -101,39 +101,36 @@ export const Task = (props: TaskProps) => {
     })
 
     const opacity = isDragging ? 0 : 1
-
-
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setListTitle(e.target.value);
-        props.onTitleChange(listTitle);
-    }
     drag(drop(ref))
+
+    // const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    //     setListTitle(e.target.value);
+    //     props.onTitleChange(listTitle);
+    // }
+
     return (
         <div ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
-            <div>
-                <button onClick={props.onComplete}>
-                    {props.isComplete ? "✔" : "❌"}
-                </button>
-                {
-                    props.isEdit ? (
-                        <div>
-                            <input type="string" value={listTitle}
-                                onChange={(e) => handleTitleChange(e)} />
-                            <button>" i "</button>
-                            <button>Finish</button>
-                        </div>
-                    ) : (
-                        <span onClick={props.onEdit} style={{
-                            textDecoration: props.isComplete ?
-                                'line-through' : 'none'
-                        }}>
-                            {props.title}
-                        </span>
-                    )
-                }
-            </div>
+            {/* <button onClick={props.onComplete}>
+                {props.isComplete ? "✔" : "❌"}
+            </button>
+            {
+                props.isEdit ? (
+                    <div>
+                        <input type="string" value={listTitle}
+                            onChange={(e) => handleTitleChange(e)} />
+                        <button>" i "</button>
+                        <button>Finish</button>
+                    </div>
+                ) : (
+                    <span onClick={props.onEdit} style={{
+                        textDecoration: props.isComplete ?
+                            'line-through' : 'none'
+                    }}>
+                        {props.title}
+                    </span>
+                )
+            } */}
+            {title}
         </div >
     )
 }
-
-export default Task;

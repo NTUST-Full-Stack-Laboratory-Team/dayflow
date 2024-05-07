@@ -4,12 +4,12 @@ import update from 'immutability-helper'
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import TodoDialog from './component/todoDialog';
-import Task from './component/task'
-import { ITask } from './task';
+import { Task } from './component/task'
+import { ItemTask } from './task';
 
 export default function Todo() {
     const [taskTitle, setTaskTitle] = useState<string>("");
-    const [tasks, setTasks] = useState<ITask[]>([]);
+    const [tasks, setTasks] = useState<ItemTask[]>([]);
     const [editingTaskIndex, setEditingTaskIndex] =
         useState<number | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -22,7 +22,7 @@ export default function Todo() {
 
     const addTask = (idNum: number, index: number): void => {
         if (taskTitle.trim() !== "") {
-            const newTask: ITask = {
+            const newTask: ItemTask = {
                 id: idNum,
                 isEdit: false,
                 index: index,
@@ -65,24 +65,25 @@ export default function Todo() {
         setTasks(newTasks);
     }
     const moveTask = useCallback((dragIndex: number, hoverIndex: number) => {
-        setTasks((prevCards: ITask[]) =>
+        setTasks((prevCards: ItemTask[]) =>
             update(prevCards, {
                 $splice: [
                     [dragIndex, 1],
-                    [hoverIndex, 0, prevCards[dragIndex] as ITask],
+                    [hoverIndex, 0, prevCards[dragIndex] as ItemTask],
                 ],
             }),
         )
     }, [])
 
     const renderTask = useCallback(
-        (ITask: { id: number; title: string; isEdit: boolean; isComplete: boolean }, index: number) => {
+        (ItemTask: { id: number; title: string; isEdit: boolean; isComplete: boolean }, index: number) => {
             return (
-                <Task id={ITask.id}
-                    isEdit={ITask.isEdit}
+                <Task key={ItemTask.id}
+                    id={ItemTask.id}
+                    isEdit={ItemTask.isEdit}
                     index={index}
-                    isComplete={ITask.isComplete}
-                    title={ITask.title}
+                    isComplete={ItemTask.isComplete}
+                    title={ItemTask.title}
                     onComplete={() => handleComplete(index)}
                     onEdit={() => handleTitleClick(index)}
                     onTitleChange={(title: string) =>

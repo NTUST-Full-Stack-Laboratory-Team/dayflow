@@ -1,10 +1,10 @@
-export interface ITask {
+export interface ItemTask {
     id: number,
     title: string,
     index: number,
     isEdit: boolean,
     isComplete: boolean,
-    subTask?: ITask[],
+    subTask?: ItemTask[],
 }
 
 export const ItemTypes = {

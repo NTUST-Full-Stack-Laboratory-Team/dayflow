@@ -1,5 +1,5 @@
 export interface ITask {
-    id: any,
+    id: number,
     title: string,
     index: number,
     isEdit: boolean,

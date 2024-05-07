@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, FC } from 'react';
 import type { Identifier, XYCoord } from 'dnd-core'
 import { useDrag, useDrop } from 'react-dnd';
 import TodoDialog from './todoDialog';
@@ -25,7 +25,7 @@ interface DragItem {
     type: string
 }
 
-const Task = (props: TaskProps) => {
+export const Task = (props: TaskProps) => {
     const [listTitle, setListTitle] = useState<string>("");
     const ref = useRef<HTMLDivElement>(null)
 
@@ -93,7 +93,7 @@ const Task = (props: TaskProps) => {
     const [{ isDragging }, drag] = useDrag({
         type: ItemTypes.TASK,
         item: () => {
-            return (props.id, props.index)
+            return { id: props.id, index: props.index }
         },
         collect: (monitor: any) => ({
             isDragging: monitor.isDragging(),
@@ -107,7 +107,7 @@ const Task = (props: TaskProps) => {
         setListTitle(e.target.value);
         props.onTitleChange(listTitle);
     }
-
+    drag(drop(ref))
     return (
         <div ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
             <div>

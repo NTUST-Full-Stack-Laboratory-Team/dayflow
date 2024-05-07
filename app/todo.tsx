@@ -1,18 +1,11 @@
 "use client"
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
+import update from 'immutability-helper'
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import TodoDialog from './component/todoDialog';
 import Task from './component/task'
 import { ITask } from './task';
-
-// interface TaskInf {
-//     label: string;
-// }
-
-// const ItemTypes = {
-//     TASK: "task"
-// };
 
 export default function Todo() {
     const [taskTitle, setTaskTitle] = useState<string>("");
@@ -27,7 +20,7 @@ export default function Todo() {
         setIsDialogOpen(true);
     }
 
-    const addTask = (idNum: string, index: number): void => {
+    const addTask = (idNum: number, index: number): void => {
         if (taskTitle.trim() !== "") {
             const newTask: ITask = {
                 id: idNum,
@@ -71,23 +64,40 @@ export default function Todo() {
         newTasks[index].title = title;
         setTasks(newTasks);
     }
+    const moveTask = useCallback((dragIndex: number, hoverIndex: number) => {
+        setTasks((prevCards: ITask[]) =>
+            update(prevCards, {
+                $splice: [
+                    [dragIndex, 1],
+                    [hoverIndex, 0, prevCards[dragIndex] as ITask],
+                ],
+            }),
+        )
+    }, [])
+
+    const renderTask = useCallback(
+        (ITask: { id: number; title: string; isEdit: boolean; isComplete: boolean }, index: number) => {
+            return (
+                <Task id={ITask.id}
+                    isEdit={ITask.isEdit}
+                    index={index}
+                    isComplete={ITask.isComplete}
+                    title={ITask.title}
+                    onComplete={() => handleComplete(index)}
+                    onEdit={() => handleTitleClick(index)}
+                    onTitleChange={(title: string) =>
+                        handleTitleChange(title, index)}
+                    moveTask={moveTask} />
+            )
+        },
+        [],
+    )
 
     return (
         <DndProvider backend={HTML5Backend}>
             <div>
-                <div>{tasks.map((task, index) =>
-                    <div key={index}>
-                        {/* <Task id={task.id}
-                            isEdit={task.isEdit}
-                            isComplete={task.isComplete}
-                            title={task.title}
-                            onComplete={() => handleComplete(index)}
-                            onEdit={() => handleTitleClick(index)}
-                            onTitleChange={(title: string) =>
-                                handleTitleChange(title, index)}
-                            onDrop={(idDrag: string, idDrop: string) =>
-                                handleDrop(idDrag, idDrop)} /> */}
-                    </div>)}
+                <div>
+                    {tasks.map((task, index) => renderTask(task, index))}
                 </div>
                 {
                     editingTaskIndex !== null ? (
@@ -99,7 +109,7 @@ export default function Todo() {
                                 value={taskTitle}
                                 onChange={(e) => setTaskTitle(e.target.value)} />
                             <button onClick={openDialog}>" i "</button>
-                            <button onClick={() => addTask("item" + (tasks.length), tasks.length)}
+                            <button onClick={() => addTask(tasks.length, tasks.length)}
                                 value={taskTitle}>Add</button>
                         </div>
                     )

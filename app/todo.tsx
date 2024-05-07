@@ -76,14 +76,14 @@ export default function Todo() {
     }, [])
 
     const renderTask = useCallback(
-        (ItemTask: { id: number; title: string; isEdit: boolean; isComplete: boolean }, index: number) => {
+        (task: ItemTask, index: number) => {
             return (
-                <Task key={ItemTask.id}
-                    id={ItemTask.id}
-                    isEdit={ItemTask.isEdit}
+                <Task key={task.id}
+                    id={task.id}
+                    isEdit={task.isEdit}
                     index={index}
-                    isComplete={ItemTask.isComplete}
-                    title={ItemTask.title}
+                    isComplete={task.isComplete}
+                    title={task.title}
                     onComplete={() => handleComplete(index)}
                     onEdit={() => handleTitleClick(index)}
                     onTitleChange={(title: string) =>

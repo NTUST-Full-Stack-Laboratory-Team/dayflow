@@ -4,13 +4,6 @@ import { useDrag, useDrop } from 'react-dnd';
 import TodoDialog from './todoDialog';
 import { ItemTask, ItemTypes } from '../task';
 
-const style = {
-    border: '1px dashed gray',
-    padding: '0.5rem 1rem',
-    marginBottom: '.5rem',
-    backgroundColor: 'white',
-    cursor: 'move',
-}
 
 interface TaskProps extends ItemTask {
     onComplete: () => void;
@@ -25,7 +18,7 @@ interface DragItem {
     type: string
 }
 
-export const Task: FC<TaskProps> = ({ id, title, index, moveTask }) => {
+export const Task: FC<TaskProps> = (props: TaskProps) => {
     const [listTitle, setListTitle] = useState<string>("");
     const ref = useRef<HTMLDivElement>(null)
 
@@ -45,7 +38,7 @@ export const Task: FC<TaskProps> = ({ id, title, index, moveTask }) => {
                 return
             }
             const dragIndex = item.index
-            const hoverIndex = index
+            const hoverIndex = props.index
 
             // Don't replace items with themselves
             if (dragIndex === hoverIndex) {
@@ -80,7 +73,7 @@ export const Task: FC<TaskProps> = ({ id, title, index, moveTask }) => {
             }
 
             // Time to actually perform the action
-            moveTask(dragIndex, hoverIndex)
+            props.moveTask(dragIndex, hoverIndex)
 
             // Note: we're mutating the monitor item here!
             // Generally it's better to avoid mutations,
@@ -93,7 +86,7 @@ export const Task: FC<TaskProps> = ({ id, title, index, moveTask }) => {
     const [{ isDragging }, drag] = useDrag({
         type: ItemTypes.TASK,
         item: () => {
-            return { id: id, index: index }
+            return { id: props.id, index: props.index }
         },
         collect: (monitor: any) => ({
             isDragging: monitor.isDragging(),
@@ -103,14 +96,14 @@ export const Task: FC<TaskProps> = ({ id, title, index, moveTask }) => {
     const opacity = isDragging ? 0 : 1
     drag(drop(ref))
 
-    // const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    //     setListTitle(e.target.value);
-    //     props.onTitleChange(listTitle);
-    // }
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        setListTitle(e.target.value);
+        props.onTitleChange(listTitle);
+    }
 
     return (
-        <div ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
-            {/* <button onClick={props.onComplete}>
+        <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
+            <button onClick={props.onComplete}>
                 {props.isComplete ? "✔" : "❌"}
             </button>
             {
@@ -129,8 +122,7 @@ export const Task: FC<TaskProps> = ({ id, title, index, moveTask }) => {
                         {props.title}
                     </span>
                 )
-            } */}
-            {title}
+            }
         </div >
     )
 }

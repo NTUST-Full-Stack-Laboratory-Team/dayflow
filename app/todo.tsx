@@ -46,7 +46,7 @@ export default function Todo() {
     //     setTasks(newTasks);
     // }
 
-    const handleComplete = (index: number): void => {
+    const handleComplete = (index: number) => {
         const newTasks = [...tasks];
         newTasks[index].isComplete = !(tasks[index].isComplete);
         setTasks(newTasks);

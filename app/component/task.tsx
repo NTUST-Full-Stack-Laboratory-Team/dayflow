@@ -20,6 +20,7 @@ interface DragItem {
 }
 
 export const Task: FC<TaskProps> = (props: TaskProps) => {
+    const [isInfoOpen, setIsInfoOpen] = useState(false);
     const [listTitle, setListTitle] = useState<string>("");
     const ref = useRef<HTMLDivElement>(null)
 
@@ -102,28 +103,40 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
         props.onTitleChange(listTitle);
     }
 
+    const handelInfoClick = (): void => {
+        setIsInfoOpen(true);
+    }
+
     return (
-        <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
-            <button onClick={() => props.onComplete(props.index)}>
-                {props.isComplete ? "✔" : "❌"}
-            </button>
+        <>
             {
-                props.isEdit ? (
-                    <div>
-                        <input type="string" value={listTitle}
-                            onChange={(e) => handleTitleChange(e)} />
-                        <button>" i "</button>
-                        <button onClick={() => props.onFinish(props.index)}>Finish</button>
-                    </div>
+                isInfoOpen ? (
+                    <TodoDialog isOpen={isInfoOpen} onClose={() => { setIsInfoOpen(false) }} />
                 ) : (
-                    <span onClick={() => props.onEdit(props.index)} style={{
-                        textDecoration: props.isComplete ?
-                            'line-through' : 'none'
-                    }}>
-                        {props.title}
-                    </span>
+                    <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
+                        <button onClick={() => props.onComplete(props.index)}>
+                            {props.isComplete ? "✔" : "❌"}
+                        </button>
+                        {
+                            props.isEdit ? (
+                                <div>
+                                    <input type="string" value={listTitle}
+                                        onChange={(e) => handleTitleChange(e)} />
+                                    <button onClick={() => handelInfoClick()}>" i "</button>
+                                    <button onClick={() => props.onFinish(props.index)}>Finish</button>
+                                </div>
+                            ) : (
+                                <span onClick={() => props.onEdit(props.index)} style={{
+                                    textDecoration: props.isComplete ?
+                                        'line-through' : 'none'
+                                }}>
+                                    {props.title}
+                                </span>
+                            )
+                        }
+                    </div >
                 )
             }
-        </div >
+        </>
     )
 }

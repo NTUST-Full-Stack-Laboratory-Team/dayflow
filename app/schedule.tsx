@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import ReactDOM from 'react-dom';
 import PieChart from './PieChart';
+import { DndProvider } from "react-dnd";
+import {HTML5Backend} from "react-dnd-html5-backend";
 
 type Time = {
     startHour: number;
@@ -109,7 +111,7 @@ export default function Schedule() {
     };
 
     return (
-        <>
+        <DndProvider backend={HTML5Backend}>
             {schedule.map((value, index) => (
                 <TimeLine index={index} myTimeLine={value} onTimeLineChange={handleTimeLine} status={status[index]} onStatusChange={handleStatusChange} key={`timeLine_${index}`}/>
             ))}
@@ -124,7 +126,7 @@ export default function Schedule() {
                 ))}
             </ul>
             <PieChart data={chartData} labels={chartLabel} />
-        </>
+        </DndProvider>
     );
 }
 

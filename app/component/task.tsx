@@ -3,7 +3,8 @@ import type { Identifier, XYCoord } from 'dnd-core'
 import { useDrag, useDrop } from 'react-dnd';
 import TodoDialog from './todoDialog';
 import { ItemTask, ItemTypes } from '../task';
-
+import "./task.css"
+import classNames from 'classnames';
 
 interface TaskProps extends ItemTask {
     onComplete: (index: number) => void;
@@ -21,7 +22,6 @@ interface DragItem {
 
 export const Task: FC<TaskProps> = (props: TaskProps) => {
     const [isInfoOpen, setIsInfoOpen] = useState(false);
-    const [listTitle, setListTitle] = useState<string>("");
     const ref = useRef<HTMLDivElement>(null)
 
     const [{ handlerId }, drop] = useDrop<
@@ -98,45 +98,25 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
     const opacity = isDragging ? 0 : 1
     drag(drop(ref))
 
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setListTitle(e.target.value);
-        props.onTitleChange(listTitle);
-    }
-
     const handelInfoClick = (): void => {
         setIsInfoOpen(true);
     }
 
     return (
-        <>
+        <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
+            <TodoDialog isOpen={isInfoOpen} onClose={() => { setIsInfoOpen(false) }} />
+            <button onClick={() => props.onComplete(props.index)}>
+                {props.isComplete ? "✔" : "❌"}
+            </button>
             {
-                isInfoOpen ? (
-                    <TodoDialog isOpen={isInfoOpen} onClose={() => { setIsInfoOpen(false) }} />
-                ) : (
-                    <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
-                        <button onClick={() => props.onComplete(props.index)}>
-                            {props.isComplete ? "✔" : "❌"}
-                        </button>
-                        {
-                            props.isEdit ? (
-                                <div>
-                                    <input type="string" value={listTitle}
-                                        onChange={(e) => handleTitleChange(e)} />
-                                    <button onClick={() => handelInfoClick()}>" i "</button>
-                                    <button onClick={() => props.onFinish(props.index)}>Finish</button>
-                                </div>
-                            ) : (
-                                <span onClick={() => props.onEdit(props.index)} style={{
-                                    textDecoration: props.isComplete ?
-                                        'line-through' : 'none'
-                                }}>
-                                    {props.title}
-                                </span>
-                            )
-                        }
-                    </div >
-                )
+                <form action="javascript:;" onSubmit={() => props.onFinish(props.index)}>
+                    <input type="string" className={classNames('task', { 'task-editing': props.isEdit })} onChange={(e) => props.onTitleChange(e.target.value)} onClick={() => props.onEdit(props.index)} style={{
+                        textDecoration: props.isComplete ?
+                            'line-through' : 'none'
+                    }} value={props.title} readOnly={!props.isEdit} />
+                    <button type="submit" style={{ display: props.isEdit ? "" : "none" }}>submit</button>
+                </form>
             }
-        </>
+        </div >
     )
 }

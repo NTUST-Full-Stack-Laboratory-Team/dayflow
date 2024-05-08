@@ -117,6 +117,9 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
                     <button type="submit" style={{ display: props.isEdit ? "" : "none" }}>submit</button>
                 </form>
             }
+            <button onClick={handelInfoClick}>
+                " i "
+            </button>
         </div >
     )
 }

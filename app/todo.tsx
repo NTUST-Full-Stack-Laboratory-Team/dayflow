@@ -46,7 +46,7 @@ export default function Todo() {
     //     setTasks(newTasks);
     // }
 
-    const handleComplete = (index: number) => {
+    const handleComplete = (index: number): void => {
         const newTasks = [...tasks];
         newTasks[index].isComplete = !(tasks[index].isComplete);
         setTasks(newTasks);
@@ -64,6 +64,13 @@ export default function Todo() {
         newTasks[index].title = title;
         setTasks(newTasks);
     }
+
+    const haamdleEditFinish = (index: number) => {
+        const newTasks = [...tasks];
+        newTasks[index].isEdit = false;
+        setEditingTaskIndex(null);
+    }
+
     const moveTask = useCallback((dragIndex: number, hoverIndex: number) => {
         setTasks((prevCards: ItemTask[]) =>
             update(prevCards, {
@@ -86,6 +93,7 @@ export default function Todo() {
                     title={task.title}
                     onComplete={() => handleComplete(index)}
                     onEdit={() => handleTitleClick(index)}
+                    onFinish={() => haamdleEditFinish(index)}
                     onTitleChange={(title: string) =>
                         handleTitleChange(title, index)}
                     moveTask={moveTask} />

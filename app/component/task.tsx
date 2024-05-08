@@ -7,7 +7,8 @@ import { ItemTask, ItemTypes } from '../task';
 
 interface TaskProps extends ItemTask {
     onComplete: (index: number) => void;
-    onEdit: () => void;
+    onEdit: (index: number) => void;
+    onFinish: (index: number) => void;
     onTitleChange: (title: string) => void; // Callback function type
     moveTask: (dragIndex: number, hoverIndex: number) => void
 }
@@ -112,10 +113,10 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
                         <input type="string" value={listTitle}
                             onChange={(e) => handleTitleChange(e)} />
                         <button>" i "</button>
-                        <button>Finish</button>
+                        <button onClick={() => props.onFinish(props.index)}>Finish</button>
                     </div>
                 ) : (
-                    <span onClick={props.onEdit} style={{
+                    <span onClick={() => props.onEdit(props.index)} style={{
                         textDecoration: props.isComplete ?
                             'line-through' : 'none'
                     }}>

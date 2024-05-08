@@ -1,0 +1,10 @@
+.task {
+    background: none;
+    border: none;
+    outline: none;
+    display: inline-block;
+}
+
+.task-editing {
+    background: white;
+}

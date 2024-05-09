@@ -6,8 +6,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import TodoDialog from './component/todoDialog';
 import { Task } from './component/task'
 import { ItemTask } from './task';
-import { Input } from "antd";
-import { PlusOutlined, MoreOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Input, Space, Button } from "antd";
+import { PlusCircleOutlined, InfoCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
 export default function Todo() {
     const [taskTitle, setTaskTitle] = useState<string>("");
@@ -108,16 +108,18 @@ export default function Todo() {
                         <></>
                     ) : (
                         <div className="flex flex-row">
+                            <button onClick={openDialog}>{<InfoCircleOutlined />}</button>
                             <form className="flex flex-row" action="javascript:;" onSubmit={() => addTask(tasks.length, tasks.length)}>
-                                <CloseCircleOutlined />
-                                <Input type="string"
-                                    value={taskTitle}
-                                    onChange={(e) => setTaskTitle(e.target.value)} />
-                                <button value={taskTitle}>
-                                    {<PlusOutlined />}
-                                </button>
+                                <Space.Compact style={{ width: '100%' }}>
+                                    <Input className="background-color: transparent;"
+                                        type="string"
+                                        value={taskTitle}
+                                        onChange={(e) => setTaskTitle(e.target.value)} />
+                                    <Button type="primary" value={taskTitle} onClick={() => addTask(tasks.length, tasks.length)}>
+                                        {<PlusCircleOutlined />}
+                                    </Button>
+                                </Space.Compact>
                             </form>
-                            <button onClick={openDialog}>{<MoreOutlined />}</button>
                         </div>
                     )
                 }

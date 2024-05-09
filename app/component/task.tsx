@@ -5,8 +5,8 @@ import TodoDialog from './todoDialog';
 import { ItemTask, ItemTypes } from '../task';
 import "./task.css"
 import classNames from 'classnames';
-import { Input } from "antd";
-import { CloseCircleOutlined, CheckCircleFilled } from '@ant-design/icons';
+import { Input, Space, Button } from "antd";
+import { CloseCircleOutlined, CheckCircleFilled, InfoCircleOutlined } from '@ant-design/icons';
 
 interface TaskProps extends ItemTask {
     onComplete: (index: number) => void;
@@ -105,23 +105,27 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
     }
 
     return (
-        <div className="flex flex-row" ref={ref} style={{ opacity }} data-handler-id={handlerId}>
-            <TodoDialog isOpen={isInfoOpen} onClose={() => { setIsInfoOpen(false) }} />
-            <button onClick={() => props.onComplete(props.index)}>
-                {props.isComplete ? <CheckCircleFilled /> : <CloseCircleOutlined />}
-            </button>
-            {
-                <form action="javascript:;" onSubmit={() => props.onFinish(props.index)}>
-                    <Input type="string" className={classNames('task', { 'task-editing': props.isEdit })} onChange={(e) => props.onTitleChange(e.target.value)} onClick={() => props.onEdit(props.index)} style={{
-                        textDecoration: props.isComplete ?
-                            'line-through' : 'none'
-                    }} value={props.title} readOnly={!props.isEdit} />
-                    <button type="submit" style={{ display: props.isEdit ? "" : "none" }}>submit</button>
-                </form>
-            }
-            <button onClick={handelInfoClick} style={{ display: props.isEdit ? "" : "none" }}>
-                " i "
-            </button>
-        </div >
+        <div className="flex flex-row" >
+            <div className="flex flex-row" ref={ref} style={{ opacity }} data-handler-id={handlerId}>
+                <TodoDialog isOpen={isInfoOpen} onClose={() => { setIsInfoOpen(false) }} />
+                <button onClick={handelInfoClick} style={{ display: props.isEdit ? "" : "none" }}>
+                    {<InfoCircleOutlined />}
+                </button>
+                <button onClick={() => props.onComplete(props.index)} style={{ display: props.isEdit ? "none" : "" }}>
+                    {props.isComplete ? <CheckCircleFilled /> : <CloseCircleOutlined />}
+                </button>
+                {
+                    <form className="flex flex-row" action="javascript:;" onSubmit={() => props.onFinish(props.index)}>
+                        <Space.Compact style={{ width: '100%' }}>
+                            <Input type="string" className={classNames('task', { 'task-editing': props.isEdit })} onChange={(e) => props.onTitleChange(e.target.value)} onClick={() => props.onEdit(props.index)} style={{
+                                textDecoration: props.isComplete ?
+                                    'line-through' : 'none'
+                            }} value={props.title} readOnly={!props.isEdit} />
+                            <Button type="primary" style={{ display: props.isEdit ? "" : "none" }} onClick={() => props.onFinish(props.index)}>Submit</Button>
+                        </Space.Compact>
+                    </form>
+                }
+            </div >
+        </div>
     )
 }

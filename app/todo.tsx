@@ -105,7 +105,7 @@ export default function Todo() {
                     editingTaskIndex !== null ? (
                         <></>
                     ) : (
-                        <div>
+                        <div className="flex flex-row">
                             <form action="javascript:;" onSubmit={() => addTask(tasks.length, tasks.length)}>
                                 <>❌</>
                                 <input type="string"

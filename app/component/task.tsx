@@ -103,7 +103,7 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
     }
 
     return (
-        <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
+        <div className="flex flex-row" ref={ref} style={{ opacity }} data-handler-id={handlerId}>
             <TodoDialog isOpen={isInfoOpen} onClose={() => { setIsInfoOpen(false) }} />
             <button onClick={() => props.onComplete(props.index)}>
                 {props.isComplete ? "✔" : "❌"}
@@ -117,7 +117,7 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
                     <button type="submit" style={{ display: props.isEdit ? "" : "none" }}>submit</button>
                 </form>
             }
-            <button onClick={handelInfoClick}>
+            <button onClick={handelInfoClick} style={{ display: props.isEdit ? "" : "none" }}>
                 " i "
             </button>
         </div >

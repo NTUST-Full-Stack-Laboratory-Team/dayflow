@@ -6,7 +6,7 @@ import { ItemTask, ItemTypes } from '../task';
 import "./task.css"
 import classNames from 'classnames';
 import { Input, Space, Button } from "antd";
-import { CloseCircleOutlined, CheckCircleFilled, InfoCircleOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, CheckCircleFilled, InfoCircleOutlined, FormOutlined } from '@ant-design/icons';
 
 interface TaskProps extends ItemTask {
     onComplete: (index: number) => void;
@@ -109,11 +109,12 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
             <div className="flex flex-row" ref={ref} style={{ opacity }} data-handler-id={handlerId}>
                 <TodoDialog isOpen={isInfoOpen} onClose={() => { setIsInfoOpen(false) }} />
                 <button onClick={handelInfoClick} style={{ display: props.isEdit ? "" : "none" }}>
-                    {<InfoCircleOutlined />}
+                    {<InfoCircleOutlined style={{ fontSize: '120%' }} />}
                 </button>
                 <button onClick={() => props.onComplete(props.index)} style={{ display: props.isEdit ? "none" : "" }}>
-                    {props.isComplete ? <CheckCircleFilled /> : <CloseCircleOutlined />}
+                    {props.isComplete ? <CheckCircleFilled style={{ fontSize: '120%' }} /> : <CloseCircleOutlined style={{ fontSize: '120%' }} />}
                 </button>
+                &nbsp;
                 {
                     <form className="flex flex-row" action="javascript:;" onSubmit={() => props.onFinish(props.index)}>
                         <Space.Compact style={{ width: '100%' }}>
@@ -121,7 +122,7 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
                                 textDecoration: props.isComplete ?
                                     'line-through' : 'none'
                             }} value={props.title} readOnly={!props.isEdit} />
-                            <Button type="primary" style={{ display: props.isEdit ? "" : "none" }} onClick={() => props.onFinish(props.index)}>Submit</Button>
+                            <Button className="flex items-center" type="primary" style={{ display: props.isEdit ? "" : "none" }} onClick={() => props.onFinish(props.index)}>{<FormOutlined />}</Button>
                         </Space.Compact>
                     </form>
                 }

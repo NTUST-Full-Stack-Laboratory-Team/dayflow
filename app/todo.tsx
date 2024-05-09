@@ -108,15 +108,16 @@ export default function Todo() {
                         <></>
                     ) : (
                         <div className="flex flex-row">
-                            <button onClick={openDialog}>{<InfoCircleOutlined />}</button>
+                            <button className="flex items-center" onClick={openDialog}>{<InfoCircleOutlined style={{ fontSize: '120%' }} />}</button>
+                            &nbsp;
                             <form className="flex flex-row" action="javascript:;" onSubmit={() => addTask(tasks.length, tasks.length)}>
                                 <Space.Compact style={{ width: '100%' }}>
                                     <Input className="background-color: transparent;"
                                         type="string"
                                         value={taskTitle}
                                         onChange={(e) => setTaskTitle(e.target.value)} />
-                                    <Button type="primary" value={taskTitle} onClick={() => addTask(tasks.length, tasks.length)}>
-                                        {<PlusCircleOutlined />}
+                                    <Button className="flex items-center" type="primary" value={taskTitle} onClick={() => addTask(tasks.length, tasks.length)}>
+                                        {<PlusCircleOutlined style={{ fontSize: '120%' }} />}
                                     </Button>
                                 </Space.Compact>
                             </form>

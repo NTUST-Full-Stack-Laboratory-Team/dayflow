@@ -5,6 +5,8 @@ import TodoDialog from './todoDialog';
 import { ItemTask, ItemTypes } from '../task';
 import "./task.css"
 import classNames from 'classnames';
+import { Input } from "antd";
+import { CloseCircleOutlined, CheckCircleFilled } from '@ant-design/icons';
 
 interface TaskProps extends ItemTask {
     onComplete: (index: number) => void;
@@ -106,11 +108,11 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
         <div className="flex flex-row" ref={ref} style={{ opacity }} data-handler-id={handlerId}>
             <TodoDialog isOpen={isInfoOpen} onClose={() => { setIsInfoOpen(false) }} />
             <button onClick={() => props.onComplete(props.index)}>
-                {props.isComplete ? "✔" : "❌"}
+                {props.isComplete ? <CheckCircleFilled /> : <CloseCircleOutlined />}
             </button>
             {
                 <form action="javascript:;" onSubmit={() => props.onFinish(props.index)}>
-                    <input type="string" className={classNames('task', { 'task-editing': props.isEdit })} onChange={(e) => props.onTitleChange(e.target.value)} onClick={() => props.onEdit(props.index)} style={{
+                    <Input type="string" className={classNames('task', { 'task-editing': props.isEdit })} onChange={(e) => props.onTitleChange(e.target.value)} onClick={() => props.onEdit(props.index)} style={{
                         textDecoration: props.isComplete ?
                             'line-through' : 'none'
                     }} value={props.title} readOnly={!props.isEdit} />

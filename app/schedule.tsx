@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import PieChart from './PieChart';
+import PieChart from './component/PieChart';
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import update from 'immutability-helper'
@@ -132,16 +132,16 @@ export default function Schedule() {
             <button onClick={handleClick}>add new timeLine</button>
             <button onClick={handleSave}>save</button>
             <br></br>
-            <div>labels</div>
-            <ul>
-                {labels.map((value, index) => (
-                    <li key={`labels_${index}`}>{value.thing} 
-                        - {Math.floor(value.minute / 60)}:{value.minute % 60}</li>
-                ))}
-            </ul>
-            <PieChart data={chartData} labels={chartLabel} />
         </DndProvider>
     );
+    // <div>labels</div>
+    // <ul>
+    //     {labels.map((value, index) => (
+    //         <li key={`labels_${index}`}>{value.thing} 
+    //             - {Math.floor(value.minute / 60)}:{value.minute % 60}</li>
+    //     ))}
+    // </ul>
+    //<PieChart data={chartData} labels={chartLabel} />
 }
 
 

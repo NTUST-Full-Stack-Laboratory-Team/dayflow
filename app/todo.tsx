@@ -6,6 +6,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import TodoDialog from './component/todoDialog';
 import { Task } from './component/task'
 import { ItemTask } from './task';
+import { Input, Space, Button } from "antd";
+import { PlusCircleOutlined, InfoCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 
 export default function Todo() {
     const [taskTitle, setTaskTitle] = useState<string>("");
@@ -105,15 +107,20 @@ export default function Todo() {
                     editingTaskIndex !== null ? (
                         <></>
                     ) : (
-                        <div>
-                            <form action="javascript:;" onSubmit={() => addTask(tasks.length, tasks.length)}>
-                                <>❌</>
-                                <input type="string"
-                                    value={taskTitle}
-                                    onChange={(e) => setTaskTitle(e.target.value)} />
-                                <button value={taskTitle}>Add</button>
+                        <div className="flex flex-row">
+                            <button className="flex items-center" onClick={openDialog}>{<InfoCircleOutlined style={{ fontSize: '120%' }} />}</button>
+                            &nbsp;
+                            <form className="flex flex-row" action="javascript:;" onSubmit={() => addTask(tasks.length, tasks.length)}>
+                                <Space.Compact style={{ width: '100%' }}>
+                                    <Input className="background-color: transparent;"
+                                        type="string"
+                                        value={taskTitle}
+                                        onChange={(e) => setTaskTitle(e.target.value)} />
+                                    <Button className="flex items-center" type="primary" value={taskTitle} onClick={() => addTask(tasks.length, tasks.length)}>
+                                        {<PlusCircleOutlined style={{ fontSize: '120%' }} />}
+                                    </Button>
+                                </Space.Compact>
                             </form>
-                            <button onClick={openDialog}>" i "</button>
                         </div>
                     )
                 }

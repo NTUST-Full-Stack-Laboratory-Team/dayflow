@@ -1,9 +1,109 @@
 import Todo from './todo'
+import Memo from "./memo"
+import Day from "./day"
+import Completeness from './Completeness'
+import { Divider } from "antd";
+import Image from "next/image";
+import DayFlowSVG from "../public/DayFlow.svg";
+import { SmileOutlined } from '@ant-design/icons'
+import { Timeline } from 'antd';
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Todo />
-    </main>
+    <div className='bg-[#FCFCFC] flex h-screen w-full flex-row items-center justify-center'>
+      <div className='bg-[#FCFCFC] shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] w-[20vw] h-[85vh]'>
+        <div className='flex flex-col items-start'>
+          <span className='font-jacques-Francois ml-4 mt-6 text-[#CEA282] text-3xl w-full h-16'>Weekly Plan</span>
+          <div className='ml-4'>
+            <Todo />
+          </div>
+        </div>
+      </div>
+      <div className='bg-[#FCFCFC] shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] flex w-[45vw] h-[90vh] flex-row justify-around'>
+        <div className='mt-6 flex h-screen w-2/5 flex-col items-start'>
+          <div className='ml-4 w-full h-1/5'>
+            <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Date</div>
+            <Day />
+          </div>
+          <div className='ml-4 w-full h-1/4'>
+            <Divider />
+            <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Day Todo</div>
+            <Todo />
+          </div>
+          <div className='ml-4 w-full'>
+            <Divider />
+            <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Memo</div>
+            <Memo />
+          </div>
+        </div>
+        {/* <Divider type="vertical" /> */}
+        <div className='mt-6 w-3/6'>
+          <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Schedule</div>
+          <div className='scheduleContainer'>
+            {
+              <Timeline
+                items={[
+                  {
+                    color: 'green',
+                    children: 'Create a services site 2015-09-01',
+                  },
+                  {
+                    color: 'green',
+                    children: 'Create a services site 2015-09-01',
+                  },
+                  {
+                    color: 'red',
+                    children: (
+                      <>
+                        <p>Solve initial network problems 1</p>
+                        <p>Solve initial network problems 2</p>
+                        <p>Solve initial network problems 3 2015-09-01</p>
+                      </>
+                    ),
+                  },
+                  {
+                    children: (
+                      <>
+                        <p>Technical testing 1</p>
+                        <p>Technical testing 2</p>
+                        <p>Technical testing 3 2015-09-01</p>
+                      </>
+                    ),
+                  },
+                  {
+                    color: 'gray',
+                    children: (
+                      <>
+                        <p>Technical testing 1</p>
+                        <p>Technical testing 2</p>
+                        <p>Technical testing 3 2015-09-01</p>
+                      </>
+                    ),
+                  },
+                  {
+                    color: 'gray',
+                    children: (
+                      <>
+                        <p>Technical testing 1</p>
+                        <p>Technical testing 2</p>
+                        <p>Technical testing 3 2015-09-01</p>
+                      </>
+                    ),
+                  },
+                  {
+                    color: '#00CCFF',
+                    dot: <SmileOutlined />,
+                    children: <p>Custom color testing</p>,
+                  },
+                ]} />
+            }
+          </div>
+          <div>
+            <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Completeness</div>
+            <Completeness />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -16,8 +16,6 @@ export default function Todo() {
         useState<number | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-
-
     const openDialog = (): void => {
         setIsDialogOpen(true);
     }
@@ -87,6 +85,8 @@ export default function Todo() {
 
     return (
         <DndProvider backend={HTML5Backend}>
+            <TodoDialog isOpen={isDialogOpen}
+                onClose={() => { setIsDialogOpen(false) }} />
             <div>
                 <div>
                     {tasks.map((task, index) => (
@@ -112,11 +112,11 @@ export default function Todo() {
                             &nbsp;
                             <form className="flex flex-row" action="javascript:;" onSubmit={() => addTask(tasks.length, tasks.length)}>
                                 <Space.Compact style={{ width: '100%' }}>
-                                    <Input className="background-color: transparent;"
+                                    <Input className="border-gray-100 background-color: transparent;"
                                         type="string"
                                         value={taskTitle}
                                         onChange={(e) => setTaskTitle(e.target.value)} />
-                                    <Button className="flex items-center" type="primary" value={taskTitle} onClick={() => addTask(tasks.length, tasks.length)}>
+                                    <Button className="border-gray-100  flex items-center " type="text" value={taskTitle} onClick={() => addTask(tasks.length, tasks.length)}>
                                         {<PlusCircleOutlined style={{ fontSize: '120%' }} />}
                                     </Button>
                                 </Space.Compact>
@@ -124,8 +124,6 @@ export default function Todo() {
                         </div>
                     )
                 }
-                <TodoDialog isOpen={isDialogOpen}
-                    onClose={() => { setIsDialogOpen(false) }} />
                 {/* <pre>{JSON.stringify(tasks, null, 2)}</pre> */}
             </div >
         </DndProvider >

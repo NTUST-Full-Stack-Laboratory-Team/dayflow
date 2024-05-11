@@ -122,7 +122,7 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
                                 textDecoration: props.isComplete ?
                                     'line-through' : 'none'
                             }} value={props.title} readOnly={!props.isEdit} />
-                            <Button className="flex items-center" type="primary" style={{ display: props.isEdit ? "" : "none" }} onClick={() => props.onFinish(props.index)}>{<FormOutlined />}</Button>
+                            <Button className="border-gray-100 flex items-center" type="text" style={{ display: props.isEdit ? "" : "none" }} onClick={() => props.onFinish(props.index)}>{<FormOutlined />}</Button>
                         </Space.Compact>
                     </form>
                 }

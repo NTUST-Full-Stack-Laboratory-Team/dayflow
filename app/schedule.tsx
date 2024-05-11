@@ -6,7 +6,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import update from 'immutability-helper'
 import { ItemTLine, Label } from "./component/Constants";
 import { TimeLine } from "./component/TimeLine";
-import { Timeline } from "antd";
+import { Timeline, Button } from "antd";
 
 
 export default function Schedule() {
@@ -17,20 +17,20 @@ export default function Schedule() {
     });
     const [status, setStatus] = useState<boolean[]>(new Array(schedule.length).fill(false));
     const [labels, setLabels] = useState<Label[]>([]);
-    const ifSave: boolean = useMemo(() => {
-        status.map((value) => {
-            if (value) return false;
-        })
-        return true;
-    }, [status]);
-    const chartData = useMemo(() => {
-        if (ifSave) return labels.map(label => label.minute);
-        return null;
-    }, [labels, ifSave]);
-    const chartLabel = useMemo(() => {
-        if (ifSave) return labels.map(label => label.thing);
-        return null;
-    }, [labels, ifSave]);
+    // const ifSave: boolean = useMemo(() => {
+    //     status.map((value) => {
+    //         if (value) return false;
+    //     })
+    //     return true;
+    // }, [status]);
+    // const chartData = useMemo(() => {
+    //     if (ifSave) return labels.map(label => label.minute);
+    //     return null;
+    // }, [labels, ifSave]);
+    // const chartLabel = useMemo(() => {
+    //     if (ifSave) return labels.map(label => label.thing);
+    //     return null;
+    // }, [labels, ifSave]);
     
     useEffect(() => {
         //console.log('Schedule render');
@@ -71,12 +71,6 @@ export default function Schedule() {
         let newSchedule: Array<ItemTLine> = schedule.slice();
         newSchedule[value.index] = value;
         setSchedule(newSchedule);
-    };
-
-    const handleSave = () => {
-        setSchedule(schedule);
-        setStatus(new Array(status.length).fill(false));
-        console.log("ok");
     };
 
     const handleStatusChange = (index: number) => {
@@ -147,8 +141,7 @@ export default function Schedule() {
     return (
         <DndProvider backend={HTML5Backend}>
             <Timeline items={items} />
-            <button onClick={handleClick}>add new timeLine</button>
-            <button onClick={handleSave}>Done</button>
+            <Button type="primary" onClick={handleClick}>Add new timeLine</Button>
             <br></br>
         </DndProvider>
     );

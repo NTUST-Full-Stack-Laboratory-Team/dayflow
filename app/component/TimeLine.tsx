@@ -1,16 +1,7 @@
 import { useState, useRef, FC, useEffect } from 'react';
 import type { Identifier, XYCoord } from 'dnd-core'
 import { useDrag, useDrop } from 'react-dnd'
-
 import { ItemTypes, ItemTLine } from './Constants'
-
-const style = {
-  border: '1px dashed gray',
-  padding: '0.5rem 1rem',
-  marginBottom: '.5rem',
-  backgroundColor: 'white',
-  cursor: 'move',
-}
 
 export interface TLineProps{
     itemTLine: ItemTLine;
@@ -162,7 +153,7 @@ export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, st
             case 4: tempType[4] = true; break;
         }
         setType(tempType);
-        onStatusChange(itemTLine.id);
+        onStatusChange(itemTLine.index);
     };
 
     useEffect(() => {
@@ -173,7 +164,7 @@ export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, st
     }, [status]);//-- change all time?
 
     return (
-        <div ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
+        <div ref={ref} style={{ opacity }} data-handler-id={handlerId}>
             {type[0] ? <input type="number" value={inputStartHour}
                 onChange={e => (handleStartHourChange(parseInt(e.target.value)))} />
                 : <button onClick={() => changeInputType(0)}>{inputStartHour}</button>}

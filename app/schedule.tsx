@@ -6,6 +6,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import update from 'immutability-helper'
 import { ItemTLine, Label } from "./component/Constants";
 import { TimeLine } from "./component/TimeLine";
+import { Timeline } from "antd";
 
 
 export default function Schedule() {
@@ -32,7 +33,7 @@ export default function Schedule() {
     }, [labels, ifSave]);
     
     useEffect(() => {
-        console.log('Schedule render');
+        //console.log('Schedule render');
         localStorage.setItem("mySchedule", JSON.stringify(schedule));
 
         //dill the label and chart
@@ -51,9 +52,19 @@ export default function Schedule() {
                 thing: "something",
             }
         }
+        if (schedule.length != 0) {
+            const tempLine = schedule[schedule.length - 1].time;
+            newTime.time = {
+                startHour: tempLine.endHour,
+                startMinute: tempLine.endMinute,
+                endHour: tempLine.endHour + 1,
+                endMinute: 0,
+                thing: "something",
+            }
+        }
         
         setSchedule([...schedule.slice(), newTime]);
-        setStatus([...status.slice(), false]);
+        setStatus(new Array(status.length + 1).fill(false));
     };
 
     const handleTimeLine = (value: ItemTLine) => {
@@ -64,10 +75,8 @@ export default function Schedule() {
 
     const handleSave = () => {
         setSchedule(schedule);
-        // schedule.map((value, _) => {
-        //     console.log(value.hour + ":" + value.minute + "-" + value.thing);
-        // })
         setStatus(new Array(status.length).fill(false));
+        console.log("ok");
     };
 
     const handleStatusChange = (index: number) => {
@@ -112,25 +121,32 @@ export default function Schedule() {
         setStatus(new Array(status.length).fill(false));
     }, [setSchedule])
 
-    return (
-        <DndProvider backend={HTML5Backend}>
-            {schedule.map((value, index) => {
-                let tempTLine: ItemTLine = {
-                    id: value.id,
-                    index: index,
-                    time: value.time
-                };
-                return(<TimeLine 
+    const items = useMemo(() => {
+        return (schedule.map((value, index) => {
+            let tempTLine: ItemTLine = {
+                id: value.id,
+                index: index,
+                time: value.time
+            };
+
+            return({children: (
+                <TimeLine 
                     key={`timeLine_${value.id}`}
                     itemTLine={tempTLine}
                     onTimeLineChange={handleTimeLine}
-                    status={status[value.id]}//--use id
+                    status={status[index]}//--use id
                     onStatusChange={handleStatusChange}
                     moveLine={moveLine}
-                />)
-            })}
+                />
+            )})
+        }))
+    }, [schedule, status]);
+
+    return (
+        <DndProvider backend={HTML5Backend}>
+            <Timeline items={items} />
             <button onClick={handleClick}>add new timeLine</button>
-            <button onClick={handleSave}>save</button>
+            <button onClick={handleSave}>Done</button>
             <br></br>
         </DndProvider>
     );

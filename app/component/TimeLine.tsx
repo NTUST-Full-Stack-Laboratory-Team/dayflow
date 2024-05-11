@@ -19,14 +19,8 @@ interface DragItem {
 }
 
 export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, status, onStatusChange, moveLine}) => {
-  const [inputStartHour, setInputStartHour] = useState<number>(itemTLine.time.startHour);
-  const [inputEndHour, setInputEndHour] = useState<number>(itemTLine.time.endHour);
-  const [inputStartMinute, setInputStartMinute] = useState<number>(itemTLine.time.startMinute);
-  const [inputEndMinute, setInputEndMinute] = useState<number>(itemTLine.time.endMinute);
-  const [inputThing, setInputThing] = useState<string>(itemTLine.time.thing);
-  const [type, setType] = useState<boolean[]>(new Array(5).fill(false));
+  const ref = useRef<HTMLDivElement>(null);
 
-  const ref = useRef<HTMLDivElement>(null)
   const [{ handlerId }, drop] = useDrop<
       DragItem,
       void,
@@ -113,36 +107,21 @@ export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, st
       case 2: itemTLine.time.endHour = value; break;
       case 3: itemTLine.time.endMinute = value; break;
     }
-    setInputStartHour(value);
     onTimeLineChange(itemTLine);
   };
 
   const handleThingChange = (value: string) => {
       itemTLine.time.thing = value;
-      setInputThing(value);
       onTimeLineChange(itemTLine);
   };
 
-  const changeInputType = (_index: number) => {
-    //console.log('changeType');
-    let tempType: boolean[] = new Array(5).fill(false);
-    switch(_index) {
-        case 0: tempType[0] = true; break;
-        case 1: tempType[1] = true; break;
-        case 2: tempType[2] = true; break;
-        case 3: tempType[3] = true; break;
-        case 4: tempType[4] = true; break;
-    }
-    setType(tempType);
+  const handleEdit = () => {
     onStatusChange(itemTLine.index);
-  };
+  }
 
-  useEffect(() => {
-    if (!status) {
-        const tempType: boolean[] = new Array(5).fill(false);
-        setType(tempType);
-    }
-  }, [status]);//-- change all time?
+  const handleBlur = () => {
+    onStatusChange(-1);
+  };
 
   return (
     <ConfigProvider
@@ -151,26 +130,31 @@ export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, st
           controlHeight: 20,
         },
     }}>
-      <div ref={ref} style={{ opacity, display: 'flex', alignItems: 'center' }} data-handler-id={handlerId}>
-        {type[0] ? <InputNumber min={0} max={23} value={inputStartHour}
-          onChange={e => (handleTimeChange(e, 0))} changeOnWheel />
-          : <button onClick={() => changeInputType(0)}>{inputStartHour}</button>}
-        <span>:</span>
-        {type[1] ? <InputNumber min={0} max={59} value={inputStartMinute}
-          onChange={e => (handleTimeChange(e, 1))} changeOnWheel />
-          : <button onClick={() => changeInputType(1)}>{inputStartMinute}</button>}
-        <span>~</span>
-        {type[2] ? <InputNumber min={0} max={23} value={inputEndHour}
-          onChange={e => (handleTimeChange(e, 2))} changeOnWheel />
-          : <button onClick={() => changeInputType(2)}>{inputEndHour}</button>}
-        <span>:</span>
-        {type[3] ? <InputNumber min={0} max={59} value={inputEndMinute}
-          onChange={e => (handleTimeChange(e, 3))} changeOnWheel />
-          : <button onClick={() => changeInputType(3)}>{inputEndMinute}</button>}
-        <span>-</span>
-        {type[4] ? <Input placeholder='Basic usage' value={inputThing}
-          onChange={e => (handleThingChange(e.target.value))} />
-          : <button onClick={() => changeInputType(4)}>{inputThing}</button>}
+      <div ref={ref} style={{ opacity, display: 'flex', alignItems: 'center' }} 
+        data-handler-id={handlerId} onClick={handleEdit} onBlur={handleBlur}>
+        {status ? 
+          <>
+            <InputNumber min={0} max={23} value={itemTLine.time.startHour}
+              onChange={e => (handleTimeChange(e, 0))} onBlur={(e) => e.stopPropagation()} changeOnWheel />
+            <span>:</span>
+            <InputNumber min={0} max={59} value={itemTLine.time.startMinute}
+              onChange={e => (handleTimeChange(e, 1))} onBlur={(e) => e.stopPropagation()} changeOnWheel />
+            <span>~</span>
+            <InputNumber min={0} max={23} value={itemTLine.time.endHour}
+              onChange={e => (handleTimeChange(e, 2))} onBlur={(e) => e.stopPropagation()} changeOnWheel />
+            <span>:</span>
+            <InputNumber min={0} max={59} value={itemTLine.time.endMinute}
+              onChange={e => (handleTimeChange(e, 3))} onBlur={(e) => e.stopPropagation()} changeOnWheel />
+            <span>-</span>
+            <Input placeholder='Basic usage' value={itemTLine.time.thing}
+              onChange={e => (handleThingChange(e.target.value))} onBlur={(e) => e.stopPropagation()} autoFocus />
+          </>
+        : (
+          <>
+            <span>{itemTLine.time.startHour}:{itemTLine.time.startMinute} ~ {itemTLine.time.endHour}
+              :{itemTLine.time.endMinute} - {itemTLine.time.thing}</span>
+          </>
+        )}
       </div>
     </ConfigProvider>
   );

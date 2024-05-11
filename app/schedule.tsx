@@ -81,7 +81,9 @@ export default function Schedule() {
 
     const handleStatusChange = (index: number) => {
         let newStatus: boolean[] = new Array(status.length).fill(false);
-        newStatus[index] = true;
+        if (index !== -1) {
+            newStatus[index] = true;
+        }
         setStatus(newStatus);
     }
     

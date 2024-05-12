@@ -112,7 +112,7 @@ export default function Todo() {
                             &nbsp;
                             <form className="flex flex-row" action="javascript:;" onSubmit={() => addTask(tasks.length, tasks.length)}>
                                 <Space.Compact style={{ width: '100%' }}>
-                                    <Input className="border-gray-100 background-color: transparent;"
+                                    <Input className="text-sm font-jacques-Francois border-gray-100 background-color: transparent;"
                                         type="string"
                                         value={taskTitle}
                                         onChange={(e) => setTaskTitle(e.target.value)} />

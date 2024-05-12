@@ -6,7 +6,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import update from 'immutability-helper'
 import { ItemTLine, Label } from "./component/Constants";
 import { TimeLine } from "./component/TimeLine";
-import { Timeline, Button } from "antd";
+import { Timeline, Button, ConfigProvider } from "antd";
+import { color } from "chart.js/helpers";
 
 
 export default function Schedule() {
@@ -139,11 +140,18 @@ export default function Schedule() {
     }, [schedule, status]);
 
     return (
-        <DndProvider backend={HTML5Backend}>
-            <Timeline items={items} />
-            <Button type="primary" onClick={handleClick}>Add new timeLine</Button>
-            <br></br>
-        </DndProvider>
+        <ConfigProvider theme={{
+            token: {
+              colorPrimary: '#748cab',
+              controlHeight: 20,
+            },
+        }}>
+            <DndProvider backend={HTML5Backend}>
+                <Timeline items={items} />
+                <Button type="text" onClick={handleClick}>Add new timeLine</Button>
+                <br></br>
+            </DndProvider>
+        </ConfigProvider>
     );
     // <div>labels</div>
     // <ul>

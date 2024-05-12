@@ -126,38 +126,31 @@ export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, st
   };
 
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          controlHeight: 20,
-        },
-    }}>
-      <div ref={ref} style={{ opacity, display: 'flex', alignItems: 'center' }} 
-        data-handler-id={handlerId} onClick={handleEdit} onBlur={handleBlur}>
-        {status ? 
-          <>
-            <InputNumber min={0} max={23} value={itemTLine.time.startHour}
-              onChange={e => (handleTimeChange(e, 0))} changeOnWheel />
-            <span>:</span>
-            <InputNumber min={0} max={59} value={itemTLine.time.startMinute}
-              onChange={e => (handleTimeChange(e, 1))} changeOnWheel />
-            <span>~</span>
-            <InputNumber min={0} max={23} value={itemTLine.time.endHour}
-              onChange={e => (handleTimeChange(e, 2))} changeOnWheel />
-            <span>:</span>
-            <InputNumber min={0} max={59} value={itemTLine.time.endMinute}
-              onChange={e => (handleTimeChange(e, 3))} changeOnWheel />
-            <span>-</span>
-            <Input placeholder='Basic usage' value={itemTLine.time.thing}
-              onChange={e => (handleThingChange(e.target.value))} autoFocus />
-          </>
-        : (
-          <>
-            <span>{itemTLine.time.startHour}:{itemTLine.time.startMinute} ~ {itemTLine.time.endHour}
-              :{itemTLine.time.endMinute} - {itemTLine.time.thing}</span>
-          </>
-        )}
-      </div>
-    </ConfigProvider>
+    <div ref={ref} style={{ opacity, display: 'flex', alignItems: 'center' }} 
+      data-handler-id={handlerId} onClick={handleEdit} onBlur={handleBlur}>
+      {status ? 
+        <>
+          <InputNumber min={0} max={23} value={itemTLine.time.startHour}
+            onChange={e => (handleTimeChange(e, 0))} changeOnWheel />
+          <span>:</span>
+          <InputNumber min={0} max={59} value={itemTLine.time.startMinute}
+            onChange={e => (handleTimeChange(e, 1))} changeOnWheel />
+          <span>~</span>
+          <InputNumber min={0} max={23} value={itemTLine.time.endHour}
+            onChange={e => (handleTimeChange(e, 2))} changeOnWheel />
+          <span>:</span>
+          <InputNumber min={0} max={59} value={itemTLine.time.endMinute}
+            onChange={e => (handleTimeChange(e, 3))} changeOnWheel />
+          <span>-</span>
+          <Input placeholder='Basic usage' value={itemTLine.time.thing}
+            onChange={e => (handleThingChange(e.target.value))} autoFocus />
+        </>
+      : (
+        <>
+          <span>{itemTLine.time.startHour}:{itemTLine.time.startMinute} ~ {itemTLine.time.endHour}
+            :{itemTLine.time.endMinute} - {itemTLine.time.thing}</span>
+        </>
+      )}
+    </div>
   );
 }

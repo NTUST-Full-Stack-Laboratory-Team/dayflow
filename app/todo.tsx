@@ -107,7 +107,7 @@ export default function Todo() {
                     editingTaskIndex !== null ? (
                         <></>
                     ) : (
-                        <div className="flex flex-row">
+                        <div className="flex flex-row invisible group-hover:visible">
                             <button className="flex items-center" onClick={openDialog}>{<InfoCircleOutlined style={{ fontSize: '120%' }} />}</button>
                             &nbsp;
                             <form className="flex flex-row" action="javascript:;" onSubmit={() => addTask(tasks.length, tasks.length)}>
@@ -116,7 +116,7 @@ export default function Todo() {
                                         type="string"
                                         value={taskTitle}
                                         onChange={(e) => setTaskTitle(e.target.value)} />
-                                    <Button className="border-gray-100  flex items-center " type="text" value={taskTitle} onClick={() => addTask(tasks.length, tasks.length)}>
+                                    <Button className="border-gray-100  flex items-center" type="text" value={taskTitle} onClick={() => addTask(tasks.length, tasks.length)}>
                                         {<PlusCircleOutlined style={{ fontSize: '120%' }} />}
                                     </Button>
                                 </Space.Compact>

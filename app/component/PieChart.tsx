@@ -1,9 +1,33 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
+import ReactModal from 'react-modal'
+import { Button } from "antd";
 
 interface PieChartProps {
     data: number[];
     labels: string[];
+}
+
+interface Props extends PieChartProps{
+    isOpen: boolean;
+    onClose?: () => void;
+}
+
+export const PieChartDialog = (props: Props) => {
+    const { isOpen, onClose } = props;
+
+    const handleClose = () => {
+        onClose?.();
+    }
+
+    return (
+        <div>
+            <ReactModal isOpen={isOpen} onRequestClose={handleClose}>
+                <PieChart data={props.data} labels={props.labels} />
+                <Button onClick={() => handleClose()}>Close</Button>
+            </ReactModal>
+        </div>
+    )
 }
 
 const PieChart: React.FC<PieChartProps> = ({ data, labels }) => {
@@ -57,4 +81,4 @@ const PieChart: React.FC<PieChartProps> = ({ data, labels }) => {
     return <canvas ref={chartContainer} />;
 };
 
-export default PieChart;
+export default PieChartDialog;

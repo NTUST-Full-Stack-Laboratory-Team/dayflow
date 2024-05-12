@@ -4,10 +4,12 @@ import PieChart from './component/PieChart';
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import update from 'immutability-helper'
-import { ItemTLine, Label } from "./component/Constants";
 import { TimeLine } from "./component/TimeLine";
 import { Timeline, Button, ConfigProvider } from "antd";
 import { color } from "chart.js/helpers";
+import { PieChartOutlined } from '@ant-design/icons'
+import { ItemTLine, Label } from "./component/Constants";
+import PieChartDialog from "./component/PieChart";
 
 
 export default function Schedule() {
@@ -18,20 +20,28 @@ export default function Schedule() {
     });
     const [status, setStatus] = useState<boolean[]>(new Array(schedule.length).fill(false));
     const [labels, setLabels] = useState<Label[]>([]);
-    // const ifSave: boolean = useMemo(() => {
-    //     status.map((value) => {
-    //         if (value) return false;
-    //     })
-    //     return true;
-    // }, [status]);
-    // const chartData = useMemo(() => {
-    //     if (ifSave) return labels.map(label => label.minute);
-    //     return null;
-    // }, [labels, ifSave]);
-    // const chartLabel = useMemo(() => {
-    //     if (ifSave) return labels.map(label => label.thing);
-    //     return null;
-    // }, [labels, ifSave]);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const ifSave: boolean = useMemo(() => {
+        status.map((value) => {
+            if (value) {
+                //setIsDialogOpen(false); //-- close when edit
+                return false;
+            }
+        })
+        return true;
+    }, [status]);
+    const chartData = useMemo(() => {
+        if (ifSave) return labels.map(label => label.minute);
+        return null;
+    }, [labels, ifSave]);
+    const chartLabel = useMemo(() => {
+        if (ifSave) return labels.map(label => label.thing);
+        return null;
+    }, [labels, ifSave]);
+
+    const openDialog = (): void => {
+        setIsDialogOpen(true);
+    }
     
     useEffect(() => {
         //console.log('Schedule render');
@@ -151,6 +161,9 @@ export default function Schedule() {
                 <Button type="text" onClick={handleClick}>Add new timeLine</Button>
                 <br></br>
             </DndProvider>
+            <button className="flex items-center" onClick={openDialog}>{<PieChartOutlined style={{ fontSize: '120%' }} />}</button>
+            <PieChartDialog data={chartData} labels={chartLabel} isOpen={isDialogOpen}
+                onClose={() => { setIsDialogOpen(false) }} />    
         </ConfigProvider>
     );
     // <div>labels</div>

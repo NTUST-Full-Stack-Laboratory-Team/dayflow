@@ -7,7 +7,7 @@ import TodoDialog from './component/todoDialog';
 import { Task } from './component/task'
 import { ItemTask } from './task';
 import { Input, Space, Button } from "antd";
-import { PlusCircleOutlined, InfoCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 export default function Todo() {
     const [taskTitle, setTaskTitle] = useState<string>("");
@@ -122,16 +122,16 @@ export default function Todo() {
                     editingTaskIndex !== null ? (
                         <></>
                     ) : (
-                        <div className="flex flex-row">
+                        <div className="flex flex-row invisible group-hover:visible">
                             <button className="flex items-center" onClick={openDialog}>{<InfoCircleOutlined style={{ fontSize: '120%' }} />}</button>
                             &nbsp;
                             <form className="flex flex-row" action="javascript:;" onSubmit={() => addTask(tasks.length, tasks.length)}>
                                 <Space.Compact style={{ width: '100%' }}>
-                                    <Input className="border-gray-100 background-color: transparent;"
+                                    <Input className="text-sm font-jacques-Francois border-gray-100 background-color: transparent;"
                                         type="string"
                                         value={taskTitle}
                                         onChange={(e) => setTaskTitle(e.target.value)} />
-                                    <Button className="border-gray-100  flex items-center " type="text" value={taskTitle} onClick={() => addTask(tasks.length, tasks.length)}>
+                                    <Button className="border-gray-100  flex items-center" type="text" value={taskTitle} onClick={() => addTask(tasks.length, tasks.length)}>
                                         {<PlusCircleOutlined style={{ fontSize: '120%' }} />}
                                     </Button>
                                 </Space.Compact>

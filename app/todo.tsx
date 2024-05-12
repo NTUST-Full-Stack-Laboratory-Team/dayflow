@@ -1,5 +1,5 @@
 "use client"
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import update from 'immutability-helper'
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -15,6 +15,18 @@ export default function Todo() {
     const [editingTaskIndex, setEditingTaskIndex] =
         useState<number | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [completeNum, setCompleteNum] = useState<number>(() => {
+        let count = 0;
+        tasks.map((value) => {
+            if (value.isComplete) count++;
+        })
+        return count;
+    })
+
+    useEffect(() => {
+        const completeness = Math.round((completeNum * 100) / tasks.length);
+        localStorage.setItem("taskCompleteness", JSON.stringify(completeness));
+    }, [completeNum, tasks.length])
 
     const openDialog = (): void => {
         setIsDialogOpen(true);
@@ -50,6 +62,9 @@ export default function Todo() {
         const newTasks = [...tasks];
         newTasks[index].isComplete = !(tasks[index].isComplete);
         setTasks(newTasks);
+
+        if (newTasks[index].isComplete) setCompleteNum(pre => (pre + 1));
+        else setCompleteNum(pre => (pre - 1));
     }
 
     const handleTitleClick = (index: number): void => {

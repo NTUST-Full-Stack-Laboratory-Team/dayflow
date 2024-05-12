@@ -7,7 +7,7 @@ import TodoDialog from './component/todoDialog';
 import { Task } from './component/task'
 import { ItemTask } from './task';
 import { Input, Space, Button } from "antd";
-import { PlusCircleOutlined, InfoCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 export default function Todo() {
     const [taskTitle, setTaskTitle] = useState<string>("");

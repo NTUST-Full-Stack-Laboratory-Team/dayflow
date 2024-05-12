@@ -7,7 +7,7 @@ import TodoDialog from './component/todoDialog';
 import { Task } from './component/task'
 import { ItemTask } from './task';
 import { Input, Space, Button } from "antd";
-import { PlusCircleOutlined, InfoCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 export default function Todo() {
     const [taskTitle, setTaskTitle] = useState<string>("");
@@ -112,7 +112,7 @@ export default function Todo() {
                             &nbsp;
                             <form className="flex flex-row" action="javascript:;" onSubmit={() => addTask(tasks.length, tasks.length)}>
                                 <Space.Compact style={{ width: '100%' }}>
-                                    <Input className="border-gray-100 background-color: transparent;"
+                                    <Input className="text-sm font-jacques-Francois border-gray-100 background-color: transparent;"
                                         type="string"
                                         value={taskTitle}
                                         onChange={(e) => setTaskTitle(e.target.value)} />

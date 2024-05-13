@@ -4,27 +4,27 @@ import { useDrag, useDrop } from 'react-dnd'
 import { ItemTypes, ItemTLine } from './Constants'
 import { ConfigProvider, InputNumber, Input } from 'antd'
 
-export interface TLineProps{
+export interface TLineProps {
   itemTLine: ItemTLine;
   onTimeLineChange: (value: ItemTLine) => void;
   status: boolean;
   onStatusChange: (index: number) => void;
   moveLine: (dragIndex: number, hoverIndex: number) => void
 }
- 
+
 interface DragItem {
   index: number
   id: string
   type: string
 }
 
-export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, status, onStatusChange, moveLine}) => {
+export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, status, onStatusChange, moveLine }) => {
   const ref = useRef<HTMLDivElement>(null);
 
   const [{ handlerId }, drop] = useDrop<
-      DragItem,
-      void,
-      { handlerId: Identifier | null }
+    DragItem,
+    void,
+    { handlerId: Identifier | null }
   >({
     accept: ItemTypes.TLINE,
     collect(monitor) {
@@ -101,7 +101,7 @@ export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, st
 
   const handleTimeChange = (value: number | null, _index: number) => {
     if (value == null) return;
-    switch(_index) {
+    switch (_index) {
       case 0: itemTLine.time.startHour = value; break;
       case 1: itemTLine.time.startMinute = value; break;
       case 2: itemTLine.time.endHour = value; break;
@@ -111,8 +111,8 @@ export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, st
   };
 
   const handleThingChange = (value: string) => {
-      itemTLine.time.thing = value;
-      onTimeLineChange(itemTLine);
+    itemTLine.time.thing = value;
+    onTimeLineChange(itemTLine);
   };
 
   const handleEdit = () => {
@@ -126,9 +126,9 @@ export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, st
   };
 
   return (
-    <div ref={ref} style={{ opacity, display: 'flex', alignItems: 'center' }} 
+    <div ref={ref} style={{ opacity, display: 'flex', alignItems: 'center' }}
       data-handler-id={handlerId} onClick={handleEdit} onBlur={handleBlur}>
-      {status ? 
+      {status ?
         <>
           <InputNumber min={0} max={23} value={itemTLine.time.startHour}
             onChange={e => (handleTimeChange(e, 0))} changeOnWheel />
@@ -145,12 +145,12 @@ export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, st
           <Input placeholder='Basic usage' value={itemTLine.time.thing}
             onChange={e => (handleThingChange(e.target.value))} autoFocus />
         </>
-      : (
-        <>
-          <span>{itemTLine.time.startHour}:{itemTLine.time.startMinute} ~ {itemTLine.time.endHour}
-            :{itemTLine.time.endMinute} - {itemTLine.time.thing}</span>
-        </>
-      )}
+        : (
+          <>
+            <span>{itemTLine.time.startHour}:{itemTLine.time.startMinute} ~ {itemTLine.time.endHour}
+              :{itemTLine.time.endMinute} - {itemTLine.time.thing}</span>
+          </>
+        )}
     </div>
   );
 }

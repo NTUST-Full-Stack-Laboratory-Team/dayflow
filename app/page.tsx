@@ -41,7 +41,9 @@ export default function Home() {
         <div className='ml-4 mt-6 w-3/6'>
           <div className='w-full h-4/5'>
             <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Schedule</div>
-            <Schedule />
+            <div className='h-[90%] overflow-scroll'>
+              <Schedule />
+            </div>
           </div>
           <div className='w-full h-1/5'>
             <Divider />

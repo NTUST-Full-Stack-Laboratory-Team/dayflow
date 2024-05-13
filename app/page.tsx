@@ -39,9 +39,9 @@ export default function Home() {
         </div>
         {/* <Divider type="vertical" /> */}
         <div className='ml-4 mt-6 w-3/6'>
-          <div className='w-full h-4/5'>
+          <div className='group w-full h-4/5'>
             <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Schedule</div>
-            <div className='h-[90%] overflow-scroll'>
+            <div className='pt-2 h-[90%] overflow-scroll'>
               <Schedule />
             </div>
           </div>

@@ -32,17 +32,17 @@ export default function Schedule() {
     }, [status]);
     const chartData = useMemo(() => {
         if (ifSave) return labels.map(label => label.minute);
-        return null;
+        return [];
     }, [labels, ifSave]);
     const chartLabel = useMemo(() => {
         if (ifSave) return labels.map(label => label.thing);
-        return null;
+        return [];
     }, [labels, ifSave]);
 
     const openDialog = (): void => {
         setIsDialogOpen(true);
     }
-    
+
     useEffect(() => {
         //console.log('Schedule render');
         localStorage.setItem("mySchedule", JSON.stringify(schedule));
@@ -73,7 +73,7 @@ export default function Schedule() {
                 thing: "something",
             }
         }
-        
+
         setSchedule([...schedule.slice(), newTime]);
         setStatus(new Array(status.length + 1).fill(false));
     };
@@ -91,7 +91,7 @@ export default function Schedule() {
         }
         setStatus(newStatus);
     }
-    
+
     const addLabels = () => {
         let newLabels: Label[] = [];
         schedule.map((value) => {
@@ -136,35 +136,44 @@ export default function Schedule() {
                 time: value.time
             };
 
-            return({children: (
-                <TimeLine 
-                    key={`timeLine_${value.id}`}
-                    itemTLine={tempTLine}
-                    onTimeLineChange={handleTimeLine}
-                    status={status[index]}//--use id
-                    onStatusChange={handleStatusChange}
-                    moveLine={moveLine}
-                />
-            )})
+            return ({
+                children: (
+                    <TimeLine
+                        key={`timeLine_${value.id}`}
+                        itemTLine={tempTLine}
+                        onTimeLineChange={handleTimeLine}
+                        status={status[index]}//--use id
+                        onStatusChange={handleStatusChange}
+                        moveLine={moveLine}
+                    />
+                )
+            })
         }))
     }, [schedule, status]);
 
     return (
-        <ConfigProvider theme={{
-            token: {
-              colorPrimary: '#748cab',
-              controlHeight: 20,
-            },
-        }}>
-            <DndProvider backend={HTML5Backend}>
-                <Timeline items={items} />
-                <Button type="text" onClick={handleClick}>Add new timeLine</Button>
-                <br></br>
-            </DndProvider>
-            <button className="flex items-center" onClick={openDialog}>{<PieChartOutlined style={{ fontSize: '120%' }} />}</button>
-            <PieChartDialog data={chartData} labels={chartLabel} isOpen={isDialogOpen}
-                onClose={() => { setIsDialogOpen(false) }} />    
-        </ConfigProvider>
+        <div className="h-full flex flex-col items-start">
+            <ConfigProvider theme={{
+                token: {
+                    colorPrimary: '#748cab',
+                    controlHeight: 20,
+                    fontSize: 18
+                },
+            }}>
+                <div className="flex flex-col items-start h-[95%]">
+                    <DndProvider backend={HTML5Backend}>
+                        <Timeline className="font-mono" items={items} />
+                        <Button className="font-mono flex items-center invisible group-hover:visible" type="text" onClick={handleClick}>Add new timeLine</Button>
+                        <br></br>
+                    </DndProvider >
+                </div>
+                <div className="w-full flex flex-row justify-end pr-4 invisible group-hover:visible">
+                    <button className="flex items-center" onClick={openDialog}>{<PieChartOutlined style={{ fontSize: '120%' }} />}</button>
+                </div>
+                <PieChartDialog data={chartData} labels={chartLabel} isOpen={isDialogOpen}
+                    onClose={() => { setIsDialogOpen(false) }} />
+            </ConfigProvider >
+        </div>
     );
     // <div>labels</div>
     // <ul>

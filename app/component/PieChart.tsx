@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import ReactModal from 'react-modal'
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 
 interface PieChartProps {
     data: number[];
     labels: string[];
 }
 
-interface Props extends PieChartProps{
+interface Props extends PieChartProps {
     isOpen: boolean;
     onClose?: () => void;
 }
@@ -22,10 +22,9 @@ export const PieChartDialog = (props: Props) => {
 
     return (
         <div>
-            <ReactModal isOpen={isOpen} onRequestClose={handleClose}>
+            <Modal open={isOpen} onOk={handleClose} onCancel={handleClose}>
                 <PieChart data={props.data} labels={props.labels} />
-                <Button onClick={() => handleClose()}>Close</Button>
-            </ReactModal>
+            </Modal>
         </div>
     )
 }

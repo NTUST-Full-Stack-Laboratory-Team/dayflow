@@ -25,6 +25,7 @@ interface DragItem {
 export const Task: FC<TaskProps> = (props: TaskProps) => {
     const [isInfoOpen, setIsInfoOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null)
+    const refTaskComponent = useRef<HTMLDivElement>(null)
 
     const [{ handlerId }, drop] = useDrop<
         DragItem,
@@ -104,8 +105,14 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
         setIsInfoOpen(true);
     }
 
+    const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+        if (!ref.current?.contains(e.relatedTarget as Node)) {
+            props.onFinish(props.index)
+        }
+    };
+
     return (
-        <div className="flex flex-row" >
+        <div className="flex flex-row" ref={refTaskComponent} onBlur={handleBlur}>
             <div className="flex flex-row" ref={ref} style={{ opacity }} data-handler-id={handlerId}>
                 <TodoDialog isOpen={isInfoOpen} onClose={() => { setIsInfoOpen(false) }} />
                 <button onClick={handelInfoClick} style={{ display: props.isEdit ? "" : "none" }}>

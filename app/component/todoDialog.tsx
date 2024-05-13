@@ -1,4 +1,4 @@
-import ReactModal from 'react-modal'
+import { Modal } from 'antd';
 
 interface Props {
     isOpen: boolean;
@@ -14,13 +14,9 @@ export const TodoDialog = (props: Props) => {
 
     return (
         <>
-            <ReactModal isOpen={isOpen} onRequestClose={handleClose}>
-                Test
-                <br />
-                <button onClick={() => handleClose()} type="button">
-                    Finish
-                </button>
-            </ReactModal>
+            <Modal title="Todo" open={isOpen} onOk={() => handleClose()} onCancel={() => handleClose()}>
+                <p>To be continue...</p>
+            </Modal>
         </>
     )
 }

@@ -7,7 +7,7 @@ export default function Memo() {
     return (
         <>
             <TextArea variant="filled" style={{ resize: 'none' }}
-                className='h-full' rows={7}/>
+                rows={7} styles={{ textarea: { height: "100%" } }} />
         </>
     )
 }

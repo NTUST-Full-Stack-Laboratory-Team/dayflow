@@ -20,21 +20,23 @@ export default function Home() {
       </div>
       <div className='z-10 bg-[#FCFCFC] shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] flex w-[45vw] h-[90vh] flex-row justify-around'>
         <div className='mt-6 flex h-full w-2/5 flex-col items-start'>
-          <div className='ml-4 w-full h-auto'>
+          <div className='ml-4 w-full h-[10%]'>
             {/* <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Date</div> */}
             <Day />
           </div>
-          <div className='ml-4 w-full h-1/3'>
+          <div className='ml-4 w-full h-[40%]'>
             <Divider />
             <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Day Todo</div>
             <div className='group w-full h-4/6 overflow-scroll'>
               <Todo />
             </div>
           </div>
-          <div className='ml-4 w-full h-1/3'>
+          <div className='ml-4 w-full h-[45%]'>
             <Divider />
             <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Memo</div>
-            <Memo />
+            <div className='h-[70%]'>
+              <Memo />
+            </div>
           </div>
         </div>
         {/* <Divider type="vertical" /> */}

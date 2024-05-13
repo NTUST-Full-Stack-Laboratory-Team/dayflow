@@ -26,6 +26,8 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+
+  overflow-y: hidden;
 }
 
 @layer utilities {

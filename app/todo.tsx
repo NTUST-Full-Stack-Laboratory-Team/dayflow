@@ -9,7 +9,7 @@ import { ItemTask } from './task';
 import { Input, Space, Button } from "antd";
 import { PlusCircleOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
-export default function Todo() {
+export default function Todo({ name, countCompleteness}: {name: string, countCompleteness: (percent: number, name: string) => void}) {
     const [taskTitle, setTaskTitle] = useState<string>("");
     const [tasks, setTasks] = useState<ItemTask[]>([]);
     const [editingTaskIndex, setEditingTaskIndex] =
@@ -25,7 +25,7 @@ export default function Todo() {
 
     useEffect(() => {
         const completeness = Math.round((completeNum * 100) / tasks.length);
-        localStorage.setItem("taskCompleteness", JSON.stringify(completeness));
+        countCompleteness(completeness, name);
     }, [completeNum, tasks.length])
 
     const openDialog = (): void => {

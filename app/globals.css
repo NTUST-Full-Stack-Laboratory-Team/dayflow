@@ -38,7 +38,11 @@ body {
 .weekly-plan-card {
   transform: translate3d(90%, 0, 0);
   transition: transform .4s cubic-bezier(1, 0, 0, 1);
+  transition-delay: .5s;
+}
 
+.weekly-plan-card:hover {
+  transition-delay: 0s;
 }
 
 @layer utilities {

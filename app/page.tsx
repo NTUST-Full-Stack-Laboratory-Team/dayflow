@@ -31,7 +31,7 @@ export default function Home() {
 
           <div className='weekly-plan-card  hover:transform-hover overflow-hidden hover:overflow-y-auto z-0 bg-[#FCFCFC] shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] w-[20vw] h-[85vh]' ref={weeklyPlanCardRef}>
             <div className='group flex flex-col items-start h-full'>
-              <span className='font-jacques-Francois ml-4 mt-6 text-[#CEA282] text-3xl w-full h-16'>Weekly Plan</span>
+              <span className='font-jacques-Francois ml-4 mt-6 text-[#CEA282] text-3xl h-16'>Weekly Plan</span>
               <div className='ml-4 w-5/6 h-5/6 overflow-hidden hover:overflow-y-auto'>
                 <Todo />
               </div>

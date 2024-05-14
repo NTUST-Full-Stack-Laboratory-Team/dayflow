@@ -35,7 +35,7 @@ export default function Schedule() {
         return [];
     }, [labels, ifSave]);
     const chartLabel = useMemo(() => {
-        if (ifSave) return labels.map(label => label.thing);
+        if (ifSave) return labels.map(label => label.value);
         return [];
     }, [labels, ifSave]);
 
@@ -98,7 +98,7 @@ export default function Schedule() {
             let ifExist = false;
             let wasteTime = (value.time.endHour - value.time.startHour) * 60 + (value.time.endMinute - value.time.startMinute);
             newLabels.some((label) => {
-                if (value.time.thing == label.thing) {
+                if (value.time.thing == label.value) {
                     ifExist = true;
                     label.minute += wasteTime;
                     return true;
@@ -107,7 +107,7 @@ export default function Schedule() {
 
             if (!ifExist) {
                 let newLabel: Label = {
-                    thing: value.time.thing,
+                    value: value.time.thing,
                     minute: wasteTime
                 }
                 newLabels = [...newLabels, newLabel];
@@ -145,6 +145,7 @@ export default function Schedule() {
                         status={status[index]}//--use id
                         onStatusChange={handleStatusChange}
                         moveLine={moveLine}
+                        option={labels}
                     />
                 )
             })

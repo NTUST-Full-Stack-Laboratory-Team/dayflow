@@ -1,15 +1,16 @@
 import { useState, useRef, FC, useEffect } from 'react';
 import type { Identifier, XYCoord } from 'dnd-core'
 import { useDrag, useDrop } from 'react-dnd'
-import { ItemTypes, ItemTLine } from './Constants'
-import { ConfigProvider, InputNumber, Input } from 'antd'
+import { ItemTypes, ItemTLine, Label } from './Constants'
+import { ConfigProvider, InputNumber, Input, AutoComplete } from 'antd'
 
 export interface TLineProps {
   itemTLine: ItemTLine;
   onTimeLineChange: (value: ItemTLine) => void;
   status: boolean;
   onStatusChange: (index: number) => void;
-  moveLine: (dragIndex: number, hoverIndex: number) => void
+  moveLine: (dragIndex: number, hoverIndex: number) => void;
+  option: Label[];
 }
 
 interface DragItem {
@@ -18,8 +19,9 @@ interface DragItem {
   type: string
 }
 
-export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, status, onStatusChange, moveLine }) => {
+export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, status, onStatusChange, moveLine, option }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [thing, setThing] = useState<string>(itemTLine.time.thing);
 
   const [{ handlerId }, drop] = useDrop<
     DragItem,
@@ -110,8 +112,8 @@ export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, st
     onTimeLineChange(itemTLine);
   };
 
-  const handleThingChange = (value: string) => {
-    itemTLine.time.thing = value;
+  const handleThingChange = () => {
+    itemTLine.time.thing = thing;
     onTimeLineChange(itemTLine);
   };
 
@@ -130,7 +132,7 @@ export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, st
       data-handler-id={handlerId} onClick={handleEdit} onBlur={handleBlur}>
       {status ?
         <>
-          <InputNumber min={0} max={23} value={itemTLine.time.startHour}
+          <InputNumber min={0} max={23} value={itemTLine.time.startHour} className="w-1/8"
             onChange={e => (handleTimeChange(e, 0))} changeOnWheel />
           <span>:</span>
           <InputNumber min={0} max={59} value={itemTLine.time.startMinute}
@@ -142,8 +144,9 @@ export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, st
           <InputNumber min={0} max={59} value={itemTLine.time.endMinute}
             onChange={e => (handleTimeChange(e, 3))} changeOnWheel />
           <span>-</span>
-          <Input placeholder='Basic usage' value={itemTLine.time.thing}
-            onChange={e => (handleThingChange(e.target.value))} autoFocus />
+          <AutoComplete options={option} value={thing} style={{ width: 100 }} className="h-full"
+            onBlur={handleThingChange} onChange={e => setThing(e)} autoFocus 
+            filterOption={(inputValue, option) => option!.value.indexOf(inputValue) !== -1}/>
         </>
         : (
           <>

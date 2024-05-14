@@ -21,6 +21,6 @@ export const ItemTypes = {
 }
 
 export interface Label {
-  thing: string;
+  value: string;
   minute: number;
 }

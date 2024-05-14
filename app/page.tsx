@@ -12,6 +12,7 @@ import bg from "../public/background2.jpg"
 
 export default function Home() {
   const [offset, setOffset] = useState(0);
+  const [completeness, setCompleteness] = useState<number>(0);
   const weeklyPlanCardRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!weeklyPlanCardRef)
@@ -21,6 +22,10 @@ export default function Home() {
 
     setOffset((width * -1) / 2);
   }, [weeklyPlanCardRef]);
+
+  const calculateComplete = (percent: number, name: string) => {
+    if (name === 'dayly') setCompleteness(percent);
+  }
 
   return (
     <>
@@ -33,7 +38,7 @@ export default function Home() {
             <div className='group flex flex-col items-start h-full'>
               <span className='font-jacques-Francois ml-4 mt-6 text-[#CEA282] text-3xl w-full h-16'>Weekly Plan</span>
               <div className='ml-4 w-5/6 h-5/6 overflow-auto'>
-                <Todo />
+                <Todo name='weekly' countCompleteness={calculateComplete} />
               </div>
             </div>
           </div>
@@ -48,7 +53,7 @@ export default function Home() {
                 <Divider />
                 <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Day Todo</div>
                 <div className='group w-full h-4/6 overflow-auto'>
-                  <Todo />
+                  <Todo name='dayly' countCompleteness={calculateComplete} />
                 </div>
               </div>
               <div className='ml-4 w-full h-[45%]'>
@@ -70,7 +75,7 @@ export default function Home() {
               <div className='w-full h-1/6'>
                 <Divider />
                 <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Completeness</div>
-                <Completeness />
+                <Completeness percent={completeness}/>
               </div>
             </div>
           </div>

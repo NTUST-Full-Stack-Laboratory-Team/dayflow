@@ -1,12 +1,10 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Flex, Progress } from 'antd';
 import { BgColorsOutlined } from '@ant-design/icons';
 import type { ProgressProps } from 'antd';
 
-export default function Completeness() {
-    //const storedData = localStorage.getItem("taskCompleteness");
-    //const percent = storedData ? JSON.parse(storedData) : 0;
+export default function Completeness({ percent }: { percent: number}) {
     const conicColors: ProgressProps['strokeColor'] = {
         '0%': '#C4BBAF',
         '50%': '#C7B6A1',
@@ -16,7 +14,7 @@ export default function Completeness() {
     return (
         <>
             <div className='w-50%'>
-                <Progress percent={100} size={["90%", 20]} strokeColor={conicColors} />
+                <Progress percent={percent} size={["90%", 20]} strokeColor={conicColors} />
             </div>
         </>
     )

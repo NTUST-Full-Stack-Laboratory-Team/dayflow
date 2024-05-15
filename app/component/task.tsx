@@ -24,7 +24,7 @@ interface DragItem {
 
 export const Task: FC<TaskProps> = (props: TaskProps) => {
     const [isInfoOpen, setIsInfoOpen] = useState(false);
-    const ref = useRef<HTMLDivElement>(null)
+    const refDragDrop = useRef<HTMLDivElement>(null)
     const refTaskComponent = useRef<HTMLDivElement>(null)
 
     const [{ handlerId }, drop] = useDrop<
@@ -39,7 +39,7 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
             }
         },
         hover(item: DragItem, monitor) {
-            if (!ref.current) {
+            if (!refDragDrop.current) {
                 return
             }
             const dragIndex = item.index
@@ -47,11 +47,11 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
 
             // Don't replace items with themselves
             if (dragIndex === hoverIndex) {
-                return
+                return;
             }
 
             // Determine rectangle on screen
-            const hoverBoundingRect = ref.current?.getBoundingClientRect()
+            const hoverBoundingRect = refDragDrop.current?.getBoundingClientRect()
 
             // Get vertical middle
             const hoverMiddleY =
@@ -84,7 +84,7 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
             // Generally it's better to avoid mutations,
             // but it's good here for the sake of performance
             // to avoid expensive index searches.
-            item.index = hoverIndex
+            item.index = hoverIndex;
         },
     })
 
@@ -99,40 +99,40 @@ export const Task: FC<TaskProps> = (props: TaskProps) => {
     })
 
     const opacity = isDragging ? 0 : 1
-    drag(drop(ref))
+    drag(drop(refDragDrop));
 
     const handelInfoClick = (): void => {
         setIsInfoOpen(true);
     }
 
     const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
-        if (!ref.current?.contains(e.relatedTarget as Node)) {
+        // console.log(ref.current);
+        // console.log(e);
+        if (!refTaskComponent.current?.contains(e.relatedTarget as Node)) {
             props.onFinish(props.index)
         }
     };
 
     return (
-        <div className="flex flex-row" ref={refTaskComponent} onBlur={handleBlur}>
-            <div className="flex flex-row" ref={ref} style={{ opacity }} data-handler-id={handlerId}>
+        <div className="flex flex-row w-full" ref={refTaskComponent} onBlur={handleBlur}>
+            <div className="flex flex-row w-full" ref={refDragDrop} style={{ opacity }} data-handler-id={handlerId}>
                 <TodoDialog isOpen={isInfoOpen} onClose={() => { setIsInfoOpen(false) }} />
-                <button onClick={handelInfoClick} style={{ display: props.isEdit ? "" : "none" }}>
+                <button tabIndex={0} onClick={handelInfoClick} style={{ display: props.isEdit ? "" : "none" }}>
                     {<InfoCircleOutlined style={{ fontSize: '120%' }} />}
                 </button>
                 <button onClick={() => props.onComplete(props.index)} style={{ display: props.isEdit ? "none" : "" }}>
                     {props.isComplete ? <CheckCircleFilled style={{ fontSize: '120%' }} /> : <CloseCircleOutlined style={{ fontSize: '120%' }} />}
                 </button>
                 &nbsp;
-                {
-                    <form className="flex flex-row" action="javascript:;" onSubmit={() => props.onFinish(props.index)}>
-                        <Space.Compact style={{ width: '100%' }}>
-                            <Input type="string" className={classNames('task', { 'task-editing': props.isEdit })} onChange={(e) => props.onTitleChange(e.target.value)} onClick={() => props.onEdit(props.index)} style={{
-                                textDecoration: props.isComplete ?
-                                    'line-through' : 'none'
-                            }} value={props.title} readOnly={!props.isEdit} />
-                            <Button className="border-gray-100 flex items-center" type="text" style={{ display: props.isEdit ? "" : "none" }} onClick={() => props.onFinish(props.index)}>{<FormOutlined />}</Button>
-                        </Space.Compact>
-                    </form>
-                }
+                <form className="flex flex-row" action="javascript:;" onSubmit={() => props.onFinish(props.index)}>
+                    <Space.Compact style={{ width: '100%' }}>
+                        <Input type="string" className={classNames('task', { 'task-editing': props.isEdit })} onChange={(e) => props.onTitleChange(e.target.value)} onClick={() => props.onEdit(props.index)} style={{
+                            textDecoration: props.isComplete ?
+                                'line-through' : 'none'
+                        }} value={props.title} readOnly={!props.isEdit} />
+                        <Button className="border-gray-100 flex items-center" type="text" style={{ display: props.isEdit ? "" : "none" }} onClick={() => props.onFinish(props.index)}>{<FormOutlined />}</Button>
+                    </Space.Compact>
+                </form>
             </div >
         </div>
     )

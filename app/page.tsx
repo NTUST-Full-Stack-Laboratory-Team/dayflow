@@ -27,7 +27,7 @@ export default function Home() {
       <div className="fixed top-0 left-0 w-screen h-screen backdrop-blur-md bg-cover" style={{ backgroundColor: "rgba(0, 0, 0, .2)" }}></div>
 
       <div className='flex h-screen w-full flex-row items-center justify-center' style={{ backgroundImage: `url('${bg.src}')`, backgroundRepeat: "no-repeat", backgroundSize: "100%" }}>
-        <div className='flex flex-row items-center justify-center' style={{ transform: `translate3d(${offset}px, 0, 0)` }}>
+        <div className='flex flex-row items-center justify-center' style={{ position: "relative", left: `${offset}px` }}>
 
           <div className='weekly-plan-card  hover:transform-hover overflow-hidden hover:overflow-y-auto z-0 bg-[#FCFCFC] shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] w-[20vw] h-[85vh]' ref={weeklyPlanCardRef}>
             <div className='group flex flex-col items-start h-full'>

@@ -36,9 +36,9 @@ export default function Home() {
 
           <div className='weekly-plan-card  hover:transform-hover overflow-hidden hover:overflow-y-auto z-0 bg-[#FCFCFC] shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)] w-[20vw] h-[85vh]' ref={weeklyPlanCardRef}>
             <div className='group flex flex-col items-start h-full'>
-                <Todo name='weekly' countCompleteness={calculateComplete} />
               <span className='font-jacques-Francois ml-4 mt-6 text-[#CEA282] text-3xl h-16'>Weekly Plan</span>
               <div className='ml-4 w-5/6 h-5/6 overflow-hidden hover:overflow-y-auto'>
+                <Todo name='weekly' countCompleteness={calculateComplete} />
               </div>
             </div>
           </div>
@@ -75,7 +75,7 @@ export default function Home() {
               <div className='w-full h-1/6'>
                 <Divider />
                 <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Completeness</div>
-                <Completeness percent={completeness}/>
+                <Completeness percent={completeness} />
               </div>
             </div>
           </div>

@@ -153,7 +153,8 @@ export default function Schedule() {
     }, [schedule, status]);
 
     return (
-        <div className="h-full flex flex-col items-start">
+        <>
+        <div className="h-[95%] flex flex-col items-start text-nowrap overflow-auto">
             <ConfigProvider theme={{
                 token: {
                     colorPrimary: '#748cab',
@@ -161,20 +162,23 @@ export default function Schedule() {
                     fontSize: 18
                 },
             }}>
-                <div className="flex flex-col items-start h-[95%]">
+                <div className="flex flex-col items-start h-[95%] ">
                     <DndProvider backend={HTML5Backend}>
                         <Timeline className="font-mono" items={items} />
                         <Button className="font-mono flex items-center invisible group-hover:visible" type="text" onClick={handleClick}>Add new timeLine</Button>
                         <br></br>
                     </DndProvider >
                 </div>
-                <div className="w-full flex flex-row justify-end pr-4 invisible group-hover:visible">
-                    <button className="flex items-center" onClick={openDialog}>{<PieChartOutlined style={{ fontSize: '120%' }} />}</button>
-                </div>
-                <PieChartDialog data={chartData} labels={chartLabel} isOpen={isDialogOpen}
-                    onClose={() => { setIsDialogOpen(false) }} />
+                
             </ConfigProvider >
+            
+            <PieChartDialog data={chartData} labels={chartLabel} isOpen={isDialogOpen}
+                onClose={() => { setIsDialogOpen(false) }} />
         </div>
+        <div className="h-[5%] w-full flex flex-row justify-end pr-4 invisible group-hover:visible">
+                    <button className="flex items-center" onClick={openDialog}>{<PieChartOutlined style={{ fontSize: '120%' }} />}</button>
+            </div>
+        </>
     );
     // <div>labels</div>
     // <ul>

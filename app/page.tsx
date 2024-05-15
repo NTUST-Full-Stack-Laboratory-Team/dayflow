@@ -68,7 +68,7 @@ export default function Home() {
             <div className='ml-4 mt-6 w-3/6 h-[85vh]'>
               <div className='group w-full h-4/5'>
                 <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Schedule</div>
-                <div className='pt-2 h-[90%] overflow-auto'>
+                <div className='pt-2 h-[90%]'>
                   <Schedule />
                 </div>
               </div>

@@ -132,21 +132,20 @@ export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, st
       data-handler-id={handlerId} onClick={handleEdit} onBlur={handleBlur}>
       {status ?
         <>
-          <InputNumber min={0} max={23} value={itemTLine.time.startHour} className="w-1/8"
+          <InputNumber min={0} max={23} value={itemTLine.time.startHour} style={{ width: 45 }}
             onChange={e => (handleTimeChange(e, 0))} changeOnWheel />
           <span>:</span>
-          <InputNumber min={0} max={59} value={itemTLine.time.startMinute}
+          <InputNumber min={0} max={59} value={itemTLine.time.startMinute} style={{ width: 45 }}
             onChange={e => (handleTimeChange(e, 1))} changeOnWheel />
           <span>~</span>
-          <InputNumber min={0} max={23} value={itemTLine.time.endHour}
+          <InputNumber min={0} max={23} value={itemTLine.time.endHour} style={{ width: 45 }}
             onChange={e => (handleTimeChange(e, 2))} changeOnWheel />
           <span>:</span>
-          <InputNumber min={0} max={59} value={itemTLine.time.endMinute}
+          <InputNumber min={0} max={59} value={itemTLine.time.endMinute} style={{ width: 45 }}
             onChange={e => (handleTimeChange(e, 3))} changeOnWheel />
           <span>-</span>
-          <AutoComplete options={option} value={thing} style={{ width: 100 }} className="h-full"
-            onBlur={handleThingChange} onChange={e => setThing(e)} autoFocus 
-            filterOption={(inputValue, option) => option!.value.indexOf(inputValue) !== -1}/>
+          <Input value={thing} autoFocus
+            onBlur={handleThingChange} onChange={e => setThing(e.target.value)} />
         </>
         : (
           <>

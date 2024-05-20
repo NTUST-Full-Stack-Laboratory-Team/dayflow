@@ -2,7 +2,11 @@ import { useState, useRef, FC, useEffect } from 'react';
 import type { Identifier, XYCoord } from 'dnd-core'
 import { useDrag, useDrop } from 'react-dnd'
 import { ItemTypes, ItemTLine, Label } from './Constants'
-import { ConfigProvider, InputNumber, Input, AutoComplete } from 'antd'
+import { ConfigProvider, InputNumber, Input, DatePicker, Space } from 'antd';
+import type { DatePickerProps, GetProps } from 'antd';
+import dayjs from 'dayjs';
+type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
+const { RangePicker } = DatePicker;
 
 export interface TLineProps {
   itemTLine: ItemTLine;
@@ -10,7 +14,6 @@ export interface TLineProps {
   status: boolean;
   onStatusChange: (index: number) => void;
   moveLine: (dragIndex: number, hoverIndex: number) => void;
-  option: Label[];
 }
 
 interface DragItem {
@@ -19,7 +22,7 @@ interface DragItem {
   type: string
 }
 
-export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, status, onStatusChange, moveLine, option }) => {
+export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, status, onStatusChange, moveLine }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [thing, setThing] = useState<string>(itemTLine.time.thing);
 
@@ -101,58 +104,81 @@ export const TimeLine: React.FC<TLineProps> = ({ itemTLine, onTimeLineChange, st
   //     console.log('TimeLine render');
   // }, [itemTLine.time]);
 
-  const handleTimeChange = (value: number | null, _index: number) => {
-    if (value == null) return;
-    switch (_index) {
-      case 0: itemTLine.time.startHour = value; break;
-      case 1: itemTLine.time.startMinute = value; break;
-      case 2: itemTLine.time.endHour = value; break;
-      case 3: itemTLine.time.endMinute = value; break;
+  const handleInputChange = (value: string, type: string) => {
+    switch (type) {
+      case "start": itemTLine.time.start = value; break;
+      case "end": itemTLine.time.end = value; break;
+      case "thing": itemTLine.time.thing = value; break;
     }
     onTimeLineChange(itemTLine);
-  };
+  }
+  // const handleTimeChange = (value: number | null, _index: number) => {
+  //   if (value == null) return;
+  //   switch (_index) {
+  //     case 0: itemTLine.time.startHour = value; break;
+  //     case 1: itemTLine.time.startMinute = value; break;
+  //     case 2: itemTLine.time.endHour = value; break;
+  //     case 3: itemTLine.time.endMinute = value; break;
+  //   }
+  //   onTimeLineChange(itemTLine);
+  // };
 
-  const handleThingChange = () => {
-    itemTLine.time.thing = thing;
-    onTimeLineChange(itemTLine);
-  };
+  // const handleThingChange = () => {
+  //   itemTLine.time.thing = thing;
+  //   onTimeLineChange(itemTLine);
+  // };
 
   const handleEdit = () => {
     onStatusChange(itemTLine.index);
   }
 
   const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
+    //if not in the container of ref
     if (!ref.current?.contains(e.relatedTarget as Node)) {
       onStatusChange(-1);
     }
   };
 
+  const onOk = (value: RangePickerProps['value']) => {
+    console.log('onOk: ', value);
+  };
+
   return (
     <div ref={ref} style={{ opacity, display: 'flex', alignItems: 'center' }}
-      data-handler-id={handlerId} onClick={handleEdit} onBlur={handleBlur}>
+      data-handler-id={handlerId} onClick={handleEdit}>
       {status ?
         <>
-          <InputNumber min={0} max={23} value={itemTLine.time.startHour} style={{ width: 45 }}
-            onChange={e => (handleTimeChange(e, 0))} changeOnWheel />
-          <span>:</span>
-          <InputNumber min={0} max={59} value={itemTLine.time.startMinute} style={{ width: 45 }}
-            onChange={e => (handleTimeChange(e, 1))} changeOnWheel />
-          <span>~</span>
-          <InputNumber min={0} max={23} value={itemTLine.time.endHour} style={{ width: 45 }}
-            onChange={e => (handleTimeChange(e, 2))} changeOnWheel />
-          <span>:</span>
-          <InputNumber min={0} max={59} value={itemTLine.time.endMinute} style={{ width: 45 }}
-            onChange={e => (handleTimeChange(e, 3))} changeOnWheel />
+          <RangePicker picker='time' showTime={{ format: 'HH:mm' }} format="HH:mm" 
+            defaultValue={[dayjs(itemTLine.time.start, 'HH:mm'), dayjs(itemTLine.time.end, 'HH:mm')]}
+            onChange={(_, dateString) => {
+              console.log('Formatted Selected Time: ', dateString[0]);
+              handleInputChange(dateString[0], "start")
+              handleInputChange(dateString[1], "end")
+            }}
+            onOk={onOk} allowClear={false}
+          />
           <span>-</span>
           <Input value={thing} autoFocus
-            onBlur={handleThingChange} onChange={e => setThing(e.target.value)} />
+            onBlur={() => handleInputChange(thing, "thing")} onChange={e => setThing(e.target.value)} />
         </>
         : (
           <>
-            <span>{itemTLine.time.startHour}:{itemTLine.time.startMinute} ~ {itemTLine.time.endHour}
-              :{itemTLine.time.endMinute} - {itemTLine.time.thing}</span>
+            <span>{itemTLine.time.start} ~ {itemTLine.time.end} - {itemTLine.time.thing}</span>
           </>
         )}
+      
     </div>
   );
 }
+
+/*<InputNumber min={0} max={23} value={itemTLine.time.startHour}
+            onChange={e => (handleInputChange(e, 0))} changeOnWheel />
+          <span>:</span>
+          <InputNumber min={0} max={59} value={itemTLine.time.startMinute}
+            onChange={e => (handleTimeChange(e, 1))} changeOnWheel />
+          <span>~</span>
+          <InputNumber min={0} max={23} value={itemTLine.time.endHour}
+            onChange={e => (handleTimeChange(e, 2))} changeOnWheel />
+          <span>:</span>
+          <InputNumber min={0} max={59} value={itemTLine.time.endMinute}
+            onChange={e => (handleTimeChange(e, 3))} changeOnWheel />*/

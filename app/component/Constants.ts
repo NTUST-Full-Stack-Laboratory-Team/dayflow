@@ -9,10 +9,8 @@ export interface ItemTLine {
 }
 
 interface ItemTime {
-  startHour: number,
-  startMinute: number,
-  endHour: number,
-  endMinute: number,
+  start: string,
+  end: string,
   thing: string,
 }
 

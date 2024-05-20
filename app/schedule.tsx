@@ -56,32 +56,29 @@ export default function Schedule() {
             id: schedule.length,
             index: schedule.length,
             time: {
-                startHour: 0,
-                startMinute: 0,
-                endHour: 0,
-                endMinute: 0,
+                start: "00:00",
+                end: "00:00",
                 thing: "something",
             }
         }
         if (schedule.length != 0) {
             const tempLine = schedule[schedule.length - 1].time;
             newTime.time = {
-                startHour: tempLine.endHour,
-                startMinute: tempLine.endMinute,
-                endHour: tempLine.endHour + 1,
-                endMinute: 0,
+                start: tempLine.end,
+                end: tempLine.end,
                 thing: "something",
             }
         }
 
-        setSchedule([...schedule.slice(), newTime]);
+        setSchedule([...schedule, newTime]);
         setStatus(new Array(status.length + 1).fill(false));
     };
 
     const handleTimeLine = (value: ItemTLine) => {
-        let newSchedule: Array<ItemTLine> = schedule.slice();
+        let newSchedule: Array<ItemTLine> = schedule;
         newSchedule[value.index] = value;
         setSchedule(newSchedule);
+        console.log( "sche---" + schedule[value.index].time.start + schedule[value.index].time.end);
     };
 
     const handleStatusChange = (index: number) => {
@@ -96,7 +93,9 @@ export default function Schedule() {
         let newLabels: Label[] = [];
         schedule.map((value) => {
             let ifExist = false;
-            let wasteTime = (value.time.endHour - value.time.startHour) * 60 + (value.time.endMinute - value.time.startMinute);
+            const [startHour, startMinute] = value?.time.start.split(":").map(Number);
+            const [endHour, endMinute] = value?.time.end.split(":").map(Number);
+            let wasteTime = (endHour - startHour) * 60 + (endMinute - startMinute);
             newLabels.some((label) => {
                 if (value.time.thing == label.value) {
                     ifExist = true;
@@ -145,7 +144,6 @@ export default function Schedule() {
                         status={status[index]}//--use id
                         onStatusChange={handleStatusChange}
                         moveLine={moveLine}
-                        option={labels}
                     />
                 )
             })

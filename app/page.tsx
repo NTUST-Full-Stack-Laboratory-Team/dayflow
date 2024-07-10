@@ -4,6 +4,7 @@ import Memo from "./memo"
 import Day from "./day"
 import Completeness from './Completeness'
 import Schedule from './schedule'
+import MySchedule from './component/mySchedule'
 import { Divider } from "antd";
 import { useEffect, useRef, useState } from 'react'
 import Image from "next/image";
@@ -69,7 +70,8 @@ export default function Home() {
               <div className='group w-full h-4/5'>
                 <div className='font-jacques-Francois text-2xl text-[#CEA282] w-full h-14'>Schedule</div>
                 <div className='pt-2 h-[90%] overflow-hidden hover:overflow-y-auto'>
-                  <Schedule />
+                  {/* {<Schedule />} */}
+                  <MySchedule />
                 </div>
               </div>
               <div className='w-full h-1/6'>

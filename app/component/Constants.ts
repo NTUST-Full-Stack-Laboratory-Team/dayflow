@@ -24,3 +24,10 @@ export interface Label {
   thing: string;
   minute: number;
 }
+
+export interface ScheduleDto {
+  id: number;
+  startTime: string;
+  endTime: string;
+  thing: string;
+}
